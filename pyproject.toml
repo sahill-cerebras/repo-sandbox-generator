@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo-sandbox-generator"
+version = "0.1.0"
+description = "Automatically generate Docker configurations for any repository"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Repository Sandbox Generator Team"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Installation/Setup",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.0.0",
+    "toml>=0.10.0",
+    "pyyaml>=6.0",
+    "jinja2>=3.0.0",
+    "requests>=2.25.0",
+    "gitpython>=3.1.0",
+    "packaging>=21.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=22.0",
+    "flake8>=5.0",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+repo-sandbox = "repo_sandbox.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/your-org/repo-sandbox-generator"
+Repository = "https://github.com/your-org/repo-sandbox-generator.git"
+Issues = "https://github.com/your-org/repo-sandbox-generator/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
