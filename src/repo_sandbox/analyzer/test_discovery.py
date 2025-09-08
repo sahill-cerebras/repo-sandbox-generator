@@ -9,69 +9,71 @@ logger = logging.getLogger(__name__)
 
 
 class TestDiscovery:
-    """Discovers test frameworks and configuration in repositories."""
-    
+    """Discovers test frameworks and their configuration in a repository."""
+
+    # --- Constants for Configuration ---
+    PYTEST_CONFIG_FILES = ['pytest.ini', 'pyproject.toml', 'setup.cfg', 'tox.ini']
+    COMMON_TEST_PATHS = ['tests', 'test', 'testing']
+    DEPENDENCY_FILES_FOR_CHECK = [
+        'requirements.txt', 'requirements-dev.txt', 'requirements/dev.txt',
+        'pyproject.toml', 'setup.py', 'setup.cfg', 'Pipfile'
+    ]
+
     def discover_test_setup(self, repo_path: Path) -> Dict[str, Any]:
         """
-        Discover test framework and configuration.
+        Discovers the test framework and configuration by checking for multiple signals.
+        
+        Detection precedence: pytest > Django tests > unittest > tox.
         
         Args:
-            repo_path: Path to repository
+            repo_path: Path to the repository.
             
         Returns:
-            Dictionary with test configuration
+            A dictionary with the discovered test configuration.
         """
-        test_config = {
+        # Find all potential test directories once to avoid redundant I/O
+        test_paths = self._find_test_directories(repo_path)
+        
+        base_config = {
             'framework': None,
-            'test_paths': [],
+            'test_paths': test_paths,
             'test_commands': [],
             'environment_vars': {},
             'config_files': []
         }
         
-        # Check for pytest
-        pytest_config = self._check_pytest(repo_path)
-        if pytest_config:
-            test_config.update(pytest_config)
-            return test_config
+        if config := self._check_pytest(repo_path, test_paths):
+            base_config.update(config)
+            return base_config
         
-        # Check for Django tests
-        django_config = self._check_django_tests(repo_path)
-        if django_config:
-            test_config.update(django_config)
-            return test_config
+        if config := self._check_django_tests(repo_path, test_paths):
+            base_config.update(config)
+            return base_config
         
-        # Check for unittest
-        unittest_config = self._check_unittest(repo_path)
-        if unittest_config:
-            test_config.update(unittest_config)
-            return test_config
+        if config := self._check_unittest(repo_path, test_paths):
+            base_config.update(config)
+            return base_config
         
-        # Check for tox
-        tox_config = self._check_tox(repo_path)
-        if tox_config:
-            test_config.update(tox_config)
-            return test_config
+        if config := self._check_tox(repo_path):
+            base_config.update(config)
+            return base_config
         
-        # Generic test directory discovery
-        test_config.update(self._discover_test_directories(repo_path))
+        # Fallback for when test directories exist but no framework is detected
+        if test_paths:
+            base_config['framework'] = 'generic'
+            base_config['test_commands'] = ['python -m unittest discover']
         
-        return test_config
+        return base_config
     
-    def _check_pytest(self, repo_path: Path) -> Optional[Dict[str, Any]]:
-        """Check for pytest configuration."""
-        config_files = ['pytest.ini', 'pyproject.toml', 'setup.cfg', 'tox.ini']
-        
-        for config_file in config_files:
+    def _check_pytest(self, repo_path: Path, test_paths: List[str]) -> Optional[Dict[str, Any]]:
+        """Checks for pytest by inspecting config files and dependencies."""
+        for config_file in self.PYTEST_CONFIG_FILES:
             config_path = repo_path / config_file
             if config_path.exists():
                 try:
-                    content = config_path.read_text(encoding='utf-8')
-                    if re.search(r'\[tool\.pytest', content) or re.search(r'\[pytest', content):
-                        logger.info("Detected pytest configuration")
-                        
-                        test_paths = self._find_test_directories(repo_path)
-                        
+                    content = config_path.read_text(encoding='utf-8', errors='ignore')
+                    if re.search(r'\[tool\.pytest\.ini_options\]|\[pytest\]', content):
+                        logger.info(f"Detected pytest configuration in {config_file}")
                         return {
                             'framework': 'pytest',
                             'test_commands': ['python -m pytest'],
@@ -79,155 +81,85 @@ class TestDiscovery:
                             'config_files': [config_file]
                         }
                 except Exception as e:
-                    logger.debug(f"Error reading {config_file}: {e}")
+                    logger.debug(f"Error reading {config_file} for pytest check: {e}")
         
-        # Check if pytest is in dependencies
-        if self._has_pytest_dependency(repo_path):
-            logger.info("Found pytest in dependencies")
+        if self._is_dependency_present(repo_path, r'^pytest\b'):
+            logger.info("Detected pytest in project dependencies")
             return {
                 'framework': 'pytest',
                 'test_commands': ['python -m pytest'],
-                'test_paths': self._find_test_directories(repo_path)
+                'test_paths': test_paths
             }
         
         return None
     
-    def _check_django_tests(self, repo_path: Path) -> Optional[Dict[str, Any]]:
-        """Check for Django test configuration."""
-        # Look for Django indicators
-        if not ((repo_path / 'manage.py').exists() or 
-                (repo_path / 'tests' / 'runtests.py').exists()):
-            return None
+    def _check_django_tests(self, repo_path: Path, test_paths: List[str]) -> Optional[Dict[str, Any]]:
+        """Checks for a Django test setup."""
+        is_django_project = (repo_path / 'manage.py').exists()
+        has_django_dep = self._is_dependency_present(repo_path, r'^[Dd]jango\b')
         
-        # Check for Django in dependencies
-        if not self._has_django_dependency(repo_path):
-            return None
-        
-        logger.info("Detected Django test setup")
-        
-        test_commands = []
-        
-        # Check for custom test runner
-        if (repo_path / 'tests' / 'runtests.py').exists():
-            test_commands.append('./tests/runtests.py --verbosity 2')
-        elif (repo_path / 'manage.py').exists():
-            test_commands.append('python manage.py test')
-        
-        return {
-            'framework': 'django',
-            'test_commands': test_commands,
-            'test_paths': self._find_test_directories(repo_path),
-            'environment_vars': {
-                'DJANGO_SETTINGS_MODULE': 'settings',
-            }
-        }
-    
-    def _check_unittest(self, repo_path: Path) -> Optional[Dict[str, Any]]:
-        """Check for unittest configuration."""
-        # Look for unittest patterns in Python files
-        python_files = list(repo_path.rglob('*.py'))
-        unittest_found = False
-        
-        for py_file in python_files[:20]:  # Limit search for performance
-            try:
-                content = py_file.read_text(encoding='utf-8', errors='ignore')
-                if re.search(r'import unittest|from unittest', content):
-                    unittest_found = True
-                    break
-            except Exception:
-                continue
-        
-        if unittest_found:
-            logger.info("Detected unittest framework")
+        if is_django_project and has_django_dep:
+            logger.info("Detected Django test setup via manage.py")
             return {
-                'framework': 'unittest',
-                'test_commands': ['python -m unittest discover'],
-                'test_paths': self._find_test_directories(repo_path)
+                'framework': 'django',
+                'test_commands': ['python manage.py test'],
+                'test_paths': test_paths,
+                'environment_vars': {'DJANGO_SETTINGS_MODULE': 'settings'}
             }
-        
+            
         return None
     
-    def _check_tox(self, repo_path: Path) -> Optional[Dict[str, Any]]:
-        """Check for tox configuration."""
-        tox_ini = repo_path / 'tox.ini'
+    def _check_unittest(self, repo_path: Path, test_paths: List[str]) -> Optional[Dict[str, Any]]:
+        """Checks for `unittest` imports within discovered test directories."""
+        if not test_paths:
+            return None
         
-        if tox_ini.exists():
+        for test_dir_str in test_paths:
+            test_dir = repo_path / test_dir_str
+            for py_file in list(test_dir.rglob('*.py'))[:20]: # Limit search scope
+                try:
+                    content = py_file.read_text(encoding='utf-8', errors='ignore')
+                    if re.search(r'import unittest|from unittest', content):
+                        logger.info(f"Detected unittest import in {py_file.relative_to(repo_path)}")
+                        return {
+                            'framework': 'unittest',
+                            'test_commands': ['python -m unittest discover'],
+                            'test_paths': test_paths
+                        }
+                except Exception:
+                    continue
+        return None
+
+    def _check_tox(self, repo_path: Path) -> Optional[Dict[str, Any]]:
+        """Checks for a tox configuration file."""
+        if (repo_path / 'tox.ini').exists():
             logger.info("Detected tox configuration")
             return {
                 'framework': 'tox',
                 'test_commands': ['tox'],
                 'config_files': ['tox.ini']
             }
-        
         return None
     
     def _find_test_directories(self, repo_path: Path) -> List[str]:
-        """Find common test directory patterns."""
-        test_dirs = []
-        
-        common_test_paths = [
-            'tests',
-            'test', 
-            'testing',
-            '*/tests',
-            '*/test'
-        ]
-        
-        for pattern in common_test_paths:
-            if '*' in pattern:
-                matches = list(repo_path.rglob(pattern))
-                for match in matches:
-                    if match.is_dir():
-                        test_dirs.append(str(match.relative_to(repo_path)))
-            else:
-                test_dir = repo_path / pattern
-                if test_dir.exists() and test_dir.is_dir():
-                    test_dirs.append(pattern)
-        
-        return test_dirs
+        """Finds common test directories."""
+        return sorted(list({
+            str(p.relative_to(repo_path))
+            for pattern in self.COMMON_TEST_PATHS
+            for p in repo_path.glob(pattern) if p.is_dir()
+        }))
     
-    def _discover_test_directories(self, repo_path: Path) -> Dict[str, Any]:
-        """Discover test directories without specific framework."""
-        test_paths = self._find_test_directories(repo_path)
+    def _is_dependency_present(self, repo_path: Path, pattern: str) -> bool:
+        """Checks for a dependency pattern in common dependency files."""
+        regex = re.compile(pattern, re.IGNORECASE | re.MULTILINE)
         
-        if test_paths:
-            return {
-                'framework': 'generic',
-                'test_paths': test_paths,
-                'test_commands': ['python -m unittest discover']  # Default fallback
-            }
-        
-        return {'framework': None}
-    
-    def _has_pytest_dependency(self, repo_path: Path) -> bool:
-        """Check if pytest is listed in dependencies."""
-        return self._check_dependency_files(repo_path, [r'^pytest', r'pytest[>=<]'])
-    
-    def _has_django_dependency(self, repo_path: Path) -> bool:
-        """Check if Django is listed in dependencies."""
-        return self._check_dependency_files(repo_path, [r'^[Dd]jango', r'[Dd]jango[>=<]'])
-    
-    def _check_dependency_files(self, repo_path: Path, patterns: List[str]) -> bool:
-        """Check for patterns in dependency files."""
-        dep_files = [
-            'requirements.txt',
-            'requirements-dev.txt',
-            'requirements/dev.txt',
-            'pyproject.toml',
-            'setup.py',
-            'setup.cfg',
-            'Pipfile'
-        ]
-        
-        for dep_file in dep_files:
+        for dep_file in self.DEPENDENCY_FILES_FOR_CHECK:
             file_path = repo_path / dep_file
             if file_path.exists():
                 try:
                     content = file_path.read_text(encoding='utf-8', errors='ignore')
-                    for pattern in patterns:
-                        if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
-                            return True
-                except Exception:
-                    continue
-        
+                    if regex.search(content):
+                        return True
+                except Exception as e:
+                    logger.debug(f"Could not check dependency in {dep_file}: {e}")
         return False
