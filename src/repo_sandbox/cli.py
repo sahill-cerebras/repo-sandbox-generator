@@ -38,8 +38,13 @@ def cli():
               help='Copy full repository source into output directory (for standalone build)')
 @click.option('--verbose', '-v', is_flag=True,
               help='Enable verbose output')
+@click.option('--test-node', 'test_nodes', multiple=True,
+              help='Explicit pytest node id (repeatable). Example: tests/test_mod.py::TestClass::test_case')
+@click.option('--test-nodes-json', 'test_nodes_json',
+              help='JSON array of pytest node ids. Example: "[\"tests/a.py::t1\", \"tests/b.py::t2\"]"')
 def generate(repo_path: Path, output: str, template: str, python_version: Optional[str],
-             include_tests: bool, include_compose: bool, copy_source: bool, verbose: bool):
+             include_tests: bool, include_compose: bool, copy_source: bool, verbose: bool,
+             test_nodes: tuple[str, ...], test_nodes_json: Optional[str]):
     """Generate Docker configuration for a repository"""
     
     output_path = Path(output)
@@ -69,6 +74,44 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
         click.echo(f"   System packages: {len(analysis['system_packages'])} packages")
         click.echo(f"   Confidence: {analysis.get('confidence', 1.0):.2f}")
     
+    # Merge manual test node specifications (if any)
+    manual_test_nodes: list[str] = []
+    if test_nodes:
+        manual_test_nodes.extend(list(test_nodes))
+    if test_nodes_json:
+        try:
+            import json as _json
+            parsed = _json.loads(test_nodes_json)
+            if isinstance(parsed, list):
+                manual_test_nodes.extend(str(x) for x in parsed)
+            else:
+                click.echo("⚠️  --test-nodes-json did not contain a JSON list; ignoring", err=True)
+        except Exception as e:
+            click.echo(f"⚠️  Could not parse --test-nodes-json: {e}", err=True)
+    # Deduplicate while preserving order
+    seen_nodes = set()
+    deduped_nodes: list[str] = []
+    for n in manual_test_nodes:
+        if n and n not in seen_nodes:
+            seen_nodes.add(n)
+            deduped_nodes.append(n)
+    if deduped_nodes:
+        # Construct a single pytest command with all node ids (could be chunked in future)
+        pytest_cmd = "python -m pytest " + " ".join(deduped_nodes)
+        analysis['test_config'] = {
+            'framework': 'pytest',
+            'test_paths': sorted({str(Path(node).parts[0]) for node in deduped_nodes if '::' in node} - {''}),
+            'test_commands': [pytest_cmd],
+            'environment_vars': analysis.get('test_config', {}).get('environment_vars', {}),
+            'config_files': analysis.get('test_config', {}).get('config_files', []),
+            'source': 'manual'
+        }
+        # Ensure include_tests gets enabled even if flag not passed
+        if not include_tests:
+            include_tests = True
+        if verbose:
+            click.echo(f"🧪 Using manually specified test nodes ({len(deduped_nodes)}). Auto-detection overridden.")
+
     # Generate Docker configuration
     dockerfile_generator = DockerfileGenerator()
     
@@ -191,8 +234,13 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
               help='Clean up cloned repository after processing')
 @click.option('--verbose', '-v', is_flag=True,
               help='Enable verbose output')
+@click.option('--test-node', 'test_nodes', multiple=True,
+              help='Explicit pytest node id (repeatable). Passed through to generate.')
+@click.option('--test-nodes-json', 'test_nodes_json',
+              help='JSON array of pytest node ids. Passed through to generate.')
 def from_git(repo_url: str, clone_dir: Optional[str], output: str,
-             copy_source: bool, cleanup: bool, verbose: bool):
+             copy_source: bool, cleanup: bool, verbose: bool,
+             test_nodes: tuple[str, ...], test_nodes_json: Optional[str]):
     """Generate Docker config directly from a Git repository"""
     
     # Determine clone directory
@@ -221,10 +269,12 @@ def from_git(repo_url: str, clone_dir: Optional[str], output: str,
             output=output,
             template='auto',
             python_version=None,
-            include_tests=False,
+            include_tests=bool(test_nodes or test_nodes_json),
             include_compose=False,
             copy_source=copy_source,
             verbose=verbose,
+            test_nodes=test_nodes,
+            test_nodes_json=test_nodes_json,
         )
         
     except Exception as e:

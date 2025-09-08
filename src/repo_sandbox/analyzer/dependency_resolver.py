@@ -124,15 +124,41 @@ class DependencyResolver:
         return {'python_packages': packages}
     
     def _parse_setup_py(self, file_path: Path) -> ParseResult:
-        """Parses `install_requires` from setup.py using AST analysis."""
+        """Enhanced setup.py parser with better error handling and variable resolution."""
+        self._current_setup_file = file_path  # Store for variable resolution
+        
         try:
-            tree = ast.parse(file_path.read_text(encoding='utf-8'))
+            content = file_path.read_text(encoding='utf-8')
+            tree = ast.parse(content)
+            
             for node in ast.walk(tree):
-                if isinstance(node, ast.Call) and getattr(node.func, 'id', None) == 'setup':
-                    return self._extract_setup_info(node)
+                if isinstance(node, ast.Call):
+                    # Check if this is a setup() call
+                    func_name = None
+                    if isinstance(node.func, ast.Name):
+                        func_name = node.func.id
+                    elif isinstance(node.func, ast.Attribute):
+                        func_name = node.func.attr
+                    
+                    if func_name == 'setup':
+                        result = self._extract_setup_info(node)
+                        result['build_system'] = 'setuptools'
+                        
+                        # Log what we found
+                        total_packages = len(result.get('python_packages', []))
+                        extras_count = len(result.get('extras_require', {}))
+                        logger.info(f"Found {total_packages} packages and {extras_count} extras groups in setup.py")
+                        
+                        return result
+                        
         except Exception as e:
             logger.warning(f"AST parsing of setup.py failed: {e}")
+        
+        finally:
+            self._current_setup_file = None  # Clean up
+        
         return {'python_packages': []}
+
     
     def _parse_pyproject_toml(self, file_path: Path) -> ParseResult:
         """Parses dependencies from pyproject.toml (PEP 621 and Poetry)."""
@@ -211,24 +237,141 @@ class DependencyResolver:
         return line
     
     def _extract_setup_info(self, setup_node: ast.Call) -> ParseResult:
-        """Extracts dependency list from an AST `setup()` call node."""
+        """
+        Extracts dependency information from an AST `setup()` call node.
+        Now supports install_requires, requires, and extras_require.
+        """
         packages = []
+        extras = {}
+        
         for keyword in setup_node.keywords:
             if keyword.arg in ['install_requires', 'requires']:
-                if isinstance(keyword.value, ast.List):
-                    for item in keyword.value.elts:
-                        if isinstance(item, (ast.Str, ast.Constant)):
-                            val = item.s if isinstance(item, ast.Str) else item.value
-                            packages.append(val)
-        return {'python_packages': packages}
-    
+                packages.extend(self._extract_list_from_ast(keyword.value))
+            elif keyword.arg == 'extras_require':
+                extras = self._extract_extras_require_from_ast(keyword.value)
+                # Add all extra dependencies to the main package list
+                for extra_name, extra_deps in extras.items():
+                    packages.extend(extra_deps)
+        
+        return {
+            'python_packages': packages,
+            'extras_require': extras
+        }
+
+    def _extract_list_from_ast(self, node: ast.AST) -> List[str]:
+        """Extracts a list of strings from various AST node types."""
+        packages = []
+        
+        if isinstance(node, ast.List):
+            for item in node.elts:
+                if package := self._extract_string_from_ast(item):
+                    packages.append(package)
+        elif isinstance(node, ast.Tuple):
+            for item in node.elts:
+                if package := self._extract_string_from_ast(item):
+                    packages.append(package)
+        elif isinstance(node, ast.Name):
+            # Handle variable references like install_requires=REQUIREMENTS
+            logger.debug(f"Found variable reference '{node.id}' - cannot resolve dynamically")
+        
+        return packages
+
+    def _extract_string_from_ast(self, node: ast.AST) -> Optional[str]:
+        """Extracts a string value from an AST node."""
+        if isinstance(node, ast.Str):  # Python < 3.8
+            return node.s
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str):  # Python >= 3.8
+            return node.value
+        return None
+
+    def _extract_extras_require_from_ast(self, node: ast.AST) -> Dict[str, List[str]]:
+        """
+        Extracts extras_require dictionary from AST node.
+        Handles both direct dict definitions and variable references.
+        """
+        extras = {}
+        
+        if isinstance(node, ast.Dict):
+            # Direct dictionary definition
+            for key_node, value_node in zip(node.keys, node.values):
+                key = self._extract_string_from_ast(key_node)
+                if key:
+                    extras[key] = self._extract_list_from_ast(value_node)
+        
+        elif isinstance(node, ast.Name):
+            # Variable reference like extras_require=EXTRAS_REQUIRE
+            logger.debug(f"Found extras_require variable reference '{node.id}' - attempting to resolve")
+            extras = self._resolve_extras_variable(node.id)
+        
+        elif isinstance(node, ast.Call):
+            # Function call that returns extras_require dict
+            logger.debug("Found extras_require function call - cannot resolve dynamically")
+        
+        return extras
+
+    def _resolve_extras_variable(self, var_name: str) -> Dict[str, List[str]]:
+        """
+        Attempts to resolve an extras_require variable by finding its assignment
+        in the same file. This handles cases like:
+        
+        EXTRAS_REQUIRE = {
+            'dev': ['pytest', 'flake8'],
+            'docs': ['sphinx']
+        }
+        setup(..., extras_require=EXTRAS_REQUIRE)
+        """
+        extras = {}
+        
+        try:
+            # Re-parse the file to find variable assignments
+            setup_file = getattr(self, '_current_setup_file', None)
+            if not setup_file:
+                return extras
+                
+            tree = ast.parse(setup_file.read_text(encoding='utf-8'))
+            
+            for node in ast.walk(tree):
+                if (isinstance(node, ast.Assign) and 
+                    len(node.targets) == 1 and 
+                    isinstance(node.targets[0], ast.Name) and 
+                    node.targets[0].id == var_name):
+                    
+                    extras = self._extract_extras_require_from_ast(node.value)
+                    break
+            
+            # Handle more complex cases like EXTRAS_REQUIRE['dev'] = [...]
+            for node in ast.walk(tree):
+                if (isinstance(node, ast.Assign) and 
+                    len(node.targets) == 1 and 
+                    isinstance(node.targets[0], ast.Subscript)):
+                    
+                    subscript = node.targets[0]
+                    if (isinstance(subscript.value, ast.Name) and 
+                        subscript.value.id == var_name):
+                        
+                        key = self._extract_string_from_ast(subscript.slice)
+                        if key:
+                            extras[key] = self._extract_list_from_ast(node.value)
+        
+        except Exception as e:
+            logger.warning(f"Failed to resolve extras_require variable '{var_name}': {e}")
+        
+        return extras
+
     def _merge_dependencies(self, base: ParseResult, new: ParseResult):
-        """Merges new dependencies into the base dictionary."""
+        """Enhanced merge function to handle extras_require."""
         if pkgs := new.get('python_packages'):
             base['python_packages'].update(pkgs)
+        
         if build_system := new.get('build_system'):
-            if not base.get('build_system'): # Don't override if already set
+            if not base.get('build_system'):
                 base['build_system'] = build_system
+        
+        # Merge extras_require information
+        if extras := new.get('extras_require'):
+            if 'extras_require' not in base:
+                base['extras_require'] = {}
+            base['extras_require'].update(extras)
     
     def _infer_system_dependencies(self, python_packages: List[str]) -> List[str]:
         """Infers required system packages from a list of Python packages."""

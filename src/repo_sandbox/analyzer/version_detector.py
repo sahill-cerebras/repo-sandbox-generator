@@ -8,6 +8,11 @@ from typing import Optional, List, Tuple, Set, Union
 from dataclasses import dataclass
 from enum import Enum
 import ast
+from pathlib import Path
+from typing import Optional
+import logging
+import toml
+from packaging.specifiers import SpecifierSet
 
 logger = logging.getLogger(__name__)
 
@@ -152,6 +157,7 @@ class PythonVersionDetector:
                 detected_versions.extend(req_versions)
         
         # Select best version
+        print(detected_versions)
         if detected_versions:
             if prefer_latest:
                 best = max(detected_versions)
@@ -227,35 +233,64 @@ class PythonVersionDetector:
         return None
     
     def _parse_pyproject_python_version(self, file_path: Path) -> Optional[str]:
-        """Parse pyproject.toml for Python version."""
-        content = self._read_file_safely(file_path)
-        if not content:
-            return None
-        
+        """
+        Parse a pyproject.toml file to determine the Python version requirement.
+
+        Supports:
+        - PEP 621 (`project.requires-python`)
+        - Poetry (`tool.poetry.dependencies.python`)
+        - PDM (`tool.pdm.requires-python`)
+        """
         try:
-            import toml
-            data = toml.loads(content)
-            
-            # PEP 621 - project.requires-python
-            if 'project' in data:
-                requires_python = data['project'].get('requires-python')
-                if requires_python:
-                    return self._extract_version_from_requirement(requires_python)
-            
-            # Poetry
-            poetry_python = data.get('tool', {}).get('poetry', {}).get('dependencies', {}).get('python')
-            if poetry_python:
-                return self._extract_version_from_requirement(poetry_python)
-            
-            # PDM
-            pdm_python = data.get('tool', {}).get('pdm', {}).get('requires-python')
-            if pdm_python:
-                return self._extract_version_from_requirement(pdm_python)
-                
+            content = file_path.read_text(encoding="utf-8")
+            if not content.strip():
+                return None
         except Exception as e:
-            logger.debug(f"Error parsing pyproject.toml: {e}")
-        
+            logger.debug(f"Failed to read {file_path}: {e}")
+            return None
+
+        try:
+            data = toml.loads(content)
+        except Exception as e:
+            logger.debug(f"Error parsing TOML from {file_path}: {e}")
+            return None
+
+        # Helper function
+        def extract_version(req: str) -> Optional[str]:
+            try:
+                # Use packaging to parse specifiers
+                spec = SpecifierSet(req)
+                # Return the first minimum version if possible
+                for s in spec:
+                    if s.operator in (">=", "=="):
+                        return s.version
+                return None
+            except Exception:
+                return None
+
+        # PEP 621
+        requires_python = data.get("project", {}).get("requires-python")
+        if requires_python:
+            version = extract_version(requires_python)
+            if version:
+                return version
+
+        # Poetry
+        poetry_python = data.get("tool", {}).get("poetry", {}).get("dependencies", {}).get("python")
+        if poetry_python:
+            version = extract_version(poetry_python)
+            if version:
+                return version
+
+        # PDM
+        pdm_python = data.get("tool", {}).get("pdm", {}).get("requires-python")
+        if pdm_python:
+            version = extract_version(pdm_python)
+            if version:
+                return version
+
         return None
+
     
     def _parse_setup_py_python_version(self, file_path: Path) -> Optional[str]:
         """Parse setup.py using AST for Python version."""
