@@ -1,192 +1,3 @@
-# """Dockerfile generation module."""
-
-# import logging
-# from typing import Dict, Any, List
-# from pathlib import Path
-# from jinja2 import Template
-
-# logger = logging.getLogger(__name__)
-
-
-# class DockerfileGenerator:
-#     """Generates a (now single-stage) Dockerfile based on repository analysis.
-
-#     Changes (single-stage simplification per user request):
-#     - Collapsed multi-stage builder/runtime into one stage for simplicity.
-#     - Still preserves ordered layering for dependency caching.
-#     - Retains apt/apk detection, optional tests, micromamba (if environment.yml).
-#     - Keeps start command inference.
-#     NOTE: Build context MUST be the repository root to include source code.
-#     """
-
-#     BASE_TEMPLATES = {
-#         'slim': 'python:{version}-slim-bullseye',
-#         'full': 'python:{version}-bullseye',
-#         'alpine': 'python:{version}-alpine',
-#         'scientific': 'python:{version}-slim-bullseye',  # scientific extras layered via pip
-#     }
-
-#     DOCKERFILE_TEMPLATE = """
-#         # Generated Dockerfile for {{ repo_name }} (single-stage)
-#         # Build with: docker build -t {{ repo_name }} -f /path/to/Dockerfile /absolute/path/to/repo
-#         # Python {{ python_version }}
-
-#         ARG PYTHON_VERSION={{ python_version }}
-#         FROM {{ base_image }}
-
-#         WORKDIR /app
-
-#         # Detect package manager (apt or apk)
-#         {% set uses_apk = 'alpine' in base_image %}
-#         {% if system_packages %}
-#         {% if uses_apk %}
-#         RUN apk add --no-cache {% for pkg in system_packages %}{{ pkg }} {% endfor %}
-#         {% else %}
-#         RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends{% for pkg in system_packages %} {{ pkg }}{% endfor %} \
-#             && rm -rf /var/lib/apt/lists/*
-#         {% endif %}
-#         {% endif %}
-
-#         # Environment variables
-#         {% for key, value in environment_vars.items() %}ENV {{ key }}="{{ value }}"
-#         {% endfor %}
-
-#         RUN python -m pip install --upgrade pip
-
-#         # Copy full source
-#         COPY . .
-
-
-#         {% if has_environment_yml %}
-#         # Conda environment via micromamba (lightweight)
-#         RUN wget -qO /usr/local/bin/micromamba https://micro.mamba.pm/api/micromamba/linux-64/latest \
-#             && chmod +x /usr/local/bin/micromamba \
-#             && micromamba create -y -n app -f environment.yml \
-#             && micromamba clean -a -y
-#         ENV PATH="/usr/local/micromamba/envs/app/bin:${PATH}"
-#         {% endif %}
-
-#         # Install base dependencies (layer cached if specs unchanged)
-#         RUN set -eux; \
-#             if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; \
-#             elif [ -f Pipfile ]; then pip install pipenv && pipenv install --system --deploy; \
-#             elif [ -f pyproject.toml ]; then python -m pip install .; \
-#             elif [ -f setup.py ]; then python -m pip install -e .; \
-#             elif [ -f environment.yml ]; then echo micromamba create -y -n app -f environment.yml && micromamba clean -a -y; \
-#             else echo "No primary dependency file found"; fi
-
-#         {% if include_tests and test_commands %}
-#         # Optional test dependencies (re-run only if specs change)
-#         {% if test_requirements_hint %}# Hint: {{ test_requirements_hint }}{% endif %}
-#         RUN set -eux; if [ -f requirements-dev.txt ]; then python -m pip install -r requirements-dev.txt; fi
-#         {% endif %}
-
-
-#         {% if include_tests and test_commands %}
-#         # Run tests at build time (can be removed if not desired)
-#         RUN set -eux; {{ test_commands | join(' && ') }}
-#         {% endif %}
-
-#         {% if expose_ports %}
-#         {% for port in expose_ports %}EXPOSE {{ port }}
-#         {% endfor %}
-#         {% endif %}
-
-#         # Default start command (auto-inferred, override with docker run ...)
-#         {{ default_cmd }}
-#         """.strip()
-
-#     def generate_dockerfile(self, analysis: Dict[str, Any], template: str = 'auto', include_tests: bool = False) -> str:
-#         if template == 'auto':
-#             template = self._select_optimal_template(analysis)
-#         base_image = self._get_base_image(template, analysis['python_version'])
-#         dep_files = analysis.get('dependency_files', [])
-#         # Only include files that actually exist in build context
-#         dependency_files = [f for f in dep_files if f]
-#         test_cfg = analysis.get('test_config', {}) or {}
-#         test_commands = test_cfg.get('test_commands', []) if include_tests else []
-#         default_cmd = self._infer_default_cmd(analysis)
-#         template_vars = {
-#             'repo_name': analysis['repo_name'],
-#             'python_version': analysis['python_version'],
-#             'base_image': base_image,
-#             'system_packages': self._optimize_system_packages(analysis.get('system_packages', [])),
-#             'environment_vars': analysis.get('environment_vars', {}),
-#             'dependency_files': dependency_files,
-#             'has_environment_yml': 'environment.yml' in dependency_files,
-#             'expose_ports': analysis.get('expose_ports', []),
-#             'include_tests': include_tests,
-#             'test_commands': test_commands,
-#             'test_requirements_hint': 'requirements-dev.txt present' if 'requirements-dev.txt' in dependency_files else '',
-#             'default_cmd': default_cmd,
-#         }
-#         dockerfile_content = Template(self.DOCKERFILE_TEMPLATE).render(**template_vars)
-#         logger.info("Generated SINGLE-STAGE Dockerfile using %s template", template)
-#         return dockerfile_content
-
-#     def generate_dockerignore(self, analysis: Dict[str, Any]) -> str:
-#         ignore_patterns = [
-#             '.git', '.gitignore', '.gitattributes',
-#             '__pycache__', '*.pyc', '*.pyo', '*.pyd', '.Python', 'env', 'venv', '.venv', '.env',
-#             '.vscode', '.idea', '*.swp', '*.swo', '*~',
-#             '.DS_Store', 'Thumbs.db',
-#             'build', 'dist', '*.egg-info', '.eggs',
-#             '.pytest_cache', '.coverage', 'htmlcov', '.tox',
-#             'docs/_build', 'Dockerfile*', 'docker-compose*.yml', '.dockerignore', '*.log'
-#         ]
-#         return '\n'.join(ignore_patterns) + '\n'
-
-#     def _select_optimal_template(self, analysis: Dict[str, Any]) -> str:
-#         packages = analysis.get('python_packages', [])
-#         scientific = ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'tensorflow', 'torch']
-#         if any(any(pkg.lower().startswith(s) for s in scientific) for pkg in packages):
-#             return 'scientific'
-#         return 'slim'
-
-#     def _get_base_image(self, template: str, python_version: str) -> str:
-#         return self.BASE_TEMPLATES.get(template, self.BASE_TEMPLATES['slim']).format(version=python_version)
-
-#     def _optimize_system_packages(self, packages: List[str]) -> List[str]:
-#         optimized = sorted(set(packages))
-#         for essential in ['curl', 'wget', 'git']:
-#             if essential not in optimized:
-#                 optimized.insert(0, essential)
-#         return optimized
-
-#     # Removed runtime system package pruning in single-stage mode; keep all.
-
-#     def _infer_default_cmd(self, analysis: Dict[str, Any]) -> str:
-#         """Infer a reasonable default CMD.
-
-#         Heuristics:
-#         - manage.py present -> runserver 0.0.0.0:8000
-#         - uvicorn in deps & any module ending with app/main/api -> uvicorn module:app
-#         - gunicorn in deps & wsgi.py present -> gunicorn module:wsgi.application
-#         - fallback simple python -m package or interactive notice.
-#         """
-#         repo_path = Path(analysis.get('repo_path', '.'))
-#         pkgs = [p.lower() for p in analysis.get('python_packages', [])]
-#         manage_py = (repo_path and Path(repo_path) / 'manage.py').exists()
-#         if manage_py:
-#             return 'CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]'
-#         if any(p.startswith('uvicorn') for p in pkgs):
-#             # naive search
-#             candidates = ['app', 'main', 'api']
-#             for c in candidates:
-#                 if (Path(repo_path) / f'{c}.py').exists():
-#                     return f'CMD ["uvicorn", "{c}:app", "--host", "0.0.0.0", "--port", "8000"]'
-#         if any(p.startswith('gunicorn') for p in pkgs):
-#             if (Path(repo_path) / 'wsgi.py').exists():
-#                 return 'CMD ["gunicorn", "wsgi:application", "--bind", "0.0.0.0:8000"]'
-#         # fallback
-#         return 'CMD ["python", "-c", "print(\'Container ready. Override CMD to run your application.\')"]'
-
-#     def _generate_default_command(self, analysis: Dict[str, Any]) -> str:  # compatibility stub
-#         return None
-
-
-
-# Code by Claude Opus 4.1
 """Optimized Dockerfile generation module with enhanced flow and accuracy."""
 
 import logging
@@ -232,13 +43,19 @@ class DockerfileGenerator:
 
     # Enhanced base image templates with more options
     BASE_TEMPLATES = {
-        BaseImageType.SLIM: 'python:{version}-slim-bookworm',  # Updated to latest Debian
-        BaseImageType.FULL: 'python:{version}-bookworm',
-        BaseImageType.ALPINE: 'python:{version}-alpine3.19',  # Specific Alpine version
-        BaseImageType.SCIENTIFIC: 'python:{version}-slim-bookworm',
-        BaseImageType.CUDA: 'nvidia/cuda:12.2.0-runtime-ubuntu22.04',  # CUDA support
-        BaseImageType.NODEJS: 'python:{version}-slim-bookworm',  # Will add Node.js
+        # Default: full Debian images
+        BaseImageType.FULL: 'python:{version}-{codename}',
+
+        # Optional lighter/minimal variants
+        BaseImageType.SLIM: 'python:{version}-slim-{codename}',
+        BaseImageType.ALPINE: 'python:{version}-alpine3.19',
+        BaseImageType.SCIENTIFIC: 'python:{version}-{codename}',
+
+        # Special cases
+        BaseImageType.CUDA: 'nvidia/cuda:12.2.0-runtime-ubuntu22.04',
+        BaseImageType.NODEJS: 'python:{version}-{codename}',
     }
+
 
     # Scientific packages for detection
     SCIENTIFIC_PACKAGES = {
@@ -272,13 +89,34 @@ ARG PIP_DISABLE_PIP_VERSION_CHECK=1
 # Set working directory
 WORKDIR /app
 
+{%- if needs_eol_debian_fix %}
+# --- FIX for EOL Debian Stretch repos ---
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list \
+ && sed -i '/security.debian.org/d' /etc/apt/sources.list \
+ && sed -i '/stretch-updates/d' /etc/apt/sources.list \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+        wget ca-certificates curl build-essential git bzip2 \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+{%- endif %}
 # Install system dependencies with optimized layering
 {%- if package_manager == PackageManager.APT %}
 {%- set base_pkgs = system_packages or [] %}
+{%- if not needs_eol_debian_fix %}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends {{ (base_pkgs + ['wget','curl','ca-certificates','build-essential','git','bzip2']) | join(' ') }} && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+{%- else %}
+{%- if base_pkgs %}
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends {{ base_pkgs | join(' ') }} && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+{%- endif %}
+{%- endif %}
 {%- elif package_manager == PackageManager.APK %}
 RUN apk add --no-cache {{ system_packages|join(' ') }}
 {%- else %}
@@ -356,12 +194,17 @@ COPY . /tmp/project
 WORKDIR /tmp/project
 RUN pip install --upgrade pip setuptools wheel build cython || true && \
     if grep -q "\\[tool.poetry\\]" pyproject.toml 2>/dev/null; then \
-        pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev; \
+        pip install poetry && \
+        poetry config virtualenvs.create false && \
+        poetry install --no-dev; \
     elif grep -q "\\[tool.flit\\]" pyproject.toml 2>/dev/null || grep -q "flit_core" pyproject.toml 2>/dev/null; then \
-        pip install flit && python -m build --wheel && pip install --no-cache-dir dist/*.whl; \
+        pip install flit && \
+        python -m build --wheel && \
+        pip install --no-cache-dir dist/*.whl; \
     else \
-        # fallback: attempt editable install (some PEP517 backends may support it), else build wheel & install
-        pip install --no-cache-dir -e .[test] 2>/dev/null || pip install --no-cache-dir -e . 2>/dev/null || (python -m build --wheel && pip install --no-cache-dir dist/*.whl); \
+        pip install --no-cache-dir -e .[test] 2>/dev/null || \
+        pip install --no-cache-dir -e . 2>/dev/null || \
+        (python -m build --wheel && pip install --no-cache-dir dist/*.whl); \
     fi
 WORKDIR /app
 
@@ -370,10 +213,7 @@ WORKDIR /app
 COPY . /tmp/project
 WORKDIR /tmp/project
 RUN pip install --upgrade pip setuptools wheel && \
-    # Prefer editable install with test extras, fallback progressively
-    (pip install --no-cache-dir -e .[test] 2>/dev/null || \
-     pip install --no-cache-dir -e . 2>/dev/null || \
-     pip install --no-cache-dir . 2>/dev/null || true)
+    pip install --no-cache-dir -e .{{ setuptools_extras }}
 WORKDIR /app
 
 {%- else %}
@@ -404,7 +244,10 @@ RUN python -m pip install --upgrade pip setuptools wheel && pip install --no-cac
 # -------------------------------------------------------------------------
 # Ensure the project is installed into the active environment before testing
 # -------------------------------------------------------------------------
-{%- if 'setup.py' in dependency_files or 'setup.cfg' in dependency_files or 'pyproject.toml' in dependency_files %}
+{%- if 'setup.py' in dependency_files or 'setup.cfg' in dependency_files %}
+RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
+    pip install --no-cache-dir -e .{{ setuptools_extras }}
+{%- elif 'pyproject.toml' in dependency_files %}
 RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
     (pip install --no-cache-dir -e .[test] 2>/dev/null || \
      pip install --no-cache-dir -e . 2>/dev/null || \
@@ -627,8 +470,8 @@ ENTRYPOINT {{ entrypoint }}
         if analysis.get('optimize_size') and not self._has_binary_dependencies(packages):
             return BaseImageType.ALPINE
         
-        # Default to slim
-        return BaseImageType.SLIM
+        # Default to full
+        return BaseImageType.FULL
 
     def _get_base_image(self, image_type: BaseImageType, python_version: str) -> str:
         """Get the base image string for the given type and Python version."""
@@ -638,7 +481,11 @@ ENTRYPOINT {{ entrypoint }}
         if image_type == BaseImageType.CUDA:
             return template  # CUDA images don't use Python version placeholder
         
-        return template.format(version=python_version)
+        codename = self._get_debian_codename(python_version)
+        print("Codename:",codename)
+        print(template.format(version=python_version, codename=codename))
+        return template.format(version=python_version, codename=codename)
+
 
     def _detect_package_manager(self, base_image: str) -> PackageManager:
         """Detect the package manager based on the base image."""
@@ -798,6 +645,7 @@ ENTRYPOINT {{ entrypoint }}
             'base_image_type': base_image_type,
             'package_manager': package_manager,
             'PackageManager': PackageManager,  # For template access
+            'needs_eol_debian_fix': self._needs_eol_debian_fix(analysis['python_version']),
             'system_packages': self._optimize_system_packages(
                 analysis.get('system_packages', []), package_manager
             ),
@@ -815,6 +663,7 @@ ENTRYPOINT {{ entrypoint }}
             'volumes': analysis.get('volumes', []),
             'entrypoint': entrypoint,
             'cmd': cmd,
+            'setuptools_extras': self._get_setuptools_extras(analysis, include_tests),
         }
 
     def _get_frontend_build_commands(self, analysis: Dict[str, Any]) -> List[str]:
@@ -883,6 +732,73 @@ ENTRYPOINT {{ entrypoint }}
             i += 1
         
         return '\n'.join(optimized)
+    
+    def _get_debian_codename(self, version: str) -> str:
+        """Map Python version to correct Debian codename for full images."""
+        try:
+            major, minor, *_ = map(int, version.split("."))
+        except Exception:
+            return "bookworm"  # fallback
+        
+        if major == 2:
+            return "jessie"
+        elif major == 3 and minor <= 6:
+            return "stretch"
+        elif major == 3 and minor == 7:
+            return "bullseye"
+        else:  # 3.8+
+            return "bookworm"
+
+    def _needs_eol_debian_fix(self, python_version: str) -> bool:
+        """Check if Python version requires EOL Debian repository fix."""
+        try:
+            major, minor, *_ = map(int, python_version.split("."))
+            # Python versions that use Debian Stretch (EOL)
+            return major == 3 and minor <= 6
+        except Exception:
+            return False
+
+    def _get_setuptools_extras(self, analysis: Dict[str, Any], include_tests: bool) -> str:
+        """Determine which setuptools extras to install based on analysis."""
+        extras_require = analysis.get('extras_require', {})
+        
+        if not extras_require:
+            return ""
+        
+        extras_to_install = []
+        
+        if include_tests:
+            # Check for common test-related extras
+            available_extras = set(extras_require.keys())
+            
+            # Priority order for test extras
+            test_extras_priority = ['dev', 'test', 'tests', 'testing']
+            
+            for extra in test_extras_priority:
+                if extra in available_extras:
+                    extras_to_install.append(extra)
+                    break
+            
+            # If no test extra found but we have individual packages, try to find them
+            if not extras_to_install:
+                # Look for extras that contain test-related packages
+                test_packages = {'pytest', 'unittest2', 'nose', 'tox'}
+                for extra_name, packages in extras_require.items():
+                    if any(pkg.lower().split('==')[0].strip() in test_packages for pkg in packages):
+                        extras_to_install.append(extra_name)
+                        break
+        
+        # Add any extras that contain dependencies we detected
+        python_packages = set(pkg.lower().split('==')[0].strip() for pkg in analysis.get('python_packages', []))
+        for extra_name, packages in extras_require.items():
+            extra_packages = set(pkg.lower().split('==')[0].strip() for pkg in packages)
+            if extra_packages & python_packages and extra_name not in extras_to_install:
+                extras_to_install.append(extra_name)
+        
+        if extras_to_install:
+            return f"[{','.join(extras_to_install)}]"
+        return ""
+
 
 
 # Additional utility functions
