@@ -180,7 +180,7 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
         if copy_source:
             if verbose:
                 click.echo("🗂  Copying source tree into output (excluding common ignore patterns)...")
-            ignore_names = {'.git', output_path.name, '__pycache__', '.mypy_cache', '.pytest_cache', 'build', 'dist'}
+            ignore_names = {'.git', output_path.name, '__pycache__', '.mypy_cache', '.pytest_cache', 'build', 'dist', '.dockerignore', 'Dockerfile', 'docker-compose.yml', 'analysis.json'}
             for src_item in repo_path.rglob('*'):
                 rel = src_item.relative_to(repo_path)
                 if any(part in ignore_names for part in rel.parts):
