@@ -213,7 +213,7 @@ WORKDIR /app
 COPY . /tmp/project
 WORKDIR /tmp/project
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -e .{{ setuptools_extras }}
+    pip install --no-cache-dir  -e .{{ setuptools_extras }}
 WORKDIR /app
 
 {%- else %}
@@ -246,7 +246,7 @@ RUN python -m pip install --upgrade pip setuptools wheel && pip install --no-cac
 # -------------------------------------------------------------------------
 {%- if 'setup.py' in dependency_files or 'setup.cfg' in dependency_files %}
 RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
-    pip install --no-cache-dir -e .{{ setuptools_extras }}
+    pip install --no-cache-dir  -e .{{ setuptools_extras }}
 {%- elif 'pyproject.toml' in dependency_files %}
 RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
     (pip install --no-cache-dir -e .[test] 2>/dev/null || \
@@ -264,39 +264,7 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         {{ test_commands|join(' && ') }}; \
     fi
 {%- endif %}
-
-
-{%- if create_user %}
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
-USER appuser
-{%- endif %}
-
-{%- if health_check %}
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD {{ health_check }}
-{%- endif %}
-
-{%- if expose_ports %}
-{%- for port in expose_ports %}
-EXPOSE {{ port }}
-{%- endfor %}
-{%- endif %}
-
-{%- if volumes %}
-{%- for volume in volumes %}
-VOLUME {{ volume }}
-{%- endfor %}
-{%- endif %}
-
-{%- if entrypoint %}
-ENTRYPOINT {{ entrypoint }}
-{%- endif %}
-{{ cmd }}"""
-
-
-
-
+"""
 
     def __init__(self):
         """Initialize the Dockerfile generator."""
@@ -309,7 +277,6 @@ ENTRYPOINT {{ entrypoint }}
         template: str = 'auto',
         include_tests: bool = False,
         include_dev_deps: bool = False,
-        create_user: bool = True,
         optimize_size: bool = True
     ) -> str:
         """
@@ -320,7 +287,6 @@ ENTRYPOINT {{ entrypoint }}
             template: Base image template to use
             include_tests: Whether to run tests during build
             include_dev_deps: Whether to include development dependencies
-            create_user: Whether to create a non-root user
             optimize_size: Whether to optimize for smaller image size
             
         Returns:
@@ -339,7 +305,7 @@ ENTRYPOINT {{ entrypoint }}
         # Prepare template variables
         template_vars = self._prepare_template_variables(
             analysis, base_image, base_image_type, package_manager,
-            include_tests, include_dev_deps, create_user, optimize_size
+            include_tests, include_dev_deps, optimize_size
         )
         
         # Generate Dockerfile
@@ -434,9 +400,7 @@ ENTRYPOINT {{ entrypoint }}
         analysis.setdefault('system_packages', [])
         analysis.setdefault('environment_vars', {})
         analysis.setdefault('dependency_files', [])
-        analysis.setdefault('expose_ports', [])
-        analysis.setdefault('volumes', [])
-        
+         
         # Clean repo name
         analysis['repo_name'] = re.sub(r'[^a-zA-Z0-9_-]', '-', analysis['repo_name'].lower())
         
@@ -553,71 +517,6 @@ ENTRYPOINT {{ entrypoint }}
         
         return packages
 
-    def _infer_start_command(self, analysis: Dict[str, Any]) -> Tuple[Optional[str], str]:
-        """
-        Infer the start command and entrypoint.
-        
-        Returns:
-            Tuple of (entrypoint, cmd)
-        """
-        repo_path = Path(analysis.get('repo_path', '.'))
-        framework = analysis.get('framework')
-        packages = set(pkg.lower().split('==')[0] for pkg in analysis.get('python_packages', []))
-        
-        # Framework-specific commands
-        if framework == 'django':
-            if (repo_path / 'manage.py').exists():
-                return None, 'CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]'
-        
-        elif framework == 'flask':
-            if (repo_path / 'app.py').exists():
-                if 'gunicorn' in packages:
-                    return None, 'CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]'
-                return None, 'CMD ["python", "-m", "flask", "run", "--host=0.0.0.0"]'
-        
-        elif framework == 'fastapi':
-            app_file = None
-            for f in ['main.py', 'app.py']:
-                if (repo_path / f).exists():
-                    app_file = f.replace('.py', '')
-                    break
-            if app_file:
-                return None, f'CMD ["uvicorn", "{app_file}:app", "--host", "0.0.0.0", "--port", "8000"]'
-        
-        elif framework == 'streamlit':
-            app_file = 'streamlit_app.py' if (repo_path / 'streamlit_app.py').exists() else 'app.py'
-            return None, f'CMD ["streamlit", "run", "{app_file}", "--server.port=8501", "--server.address=0.0.0.0"]'
-        
-        elif framework == 'gradio':
-            return None, 'CMD ["python", "app.py"]'
-        
-        # Check for other common patterns
-        if (repo_path / 'main.py').exists():
-            return None, 'CMD ["python", "main.py"]'
-        
-        if (repo_path / '__main__.py').exists():
-            return None, f'CMD ["python", "-m", "{analysis["repo_name"]}"]'
-        
-        # Default fallback
-        return None, 'CMD ["python"]'
-
-    def _get_health_check_command(self, analysis: Dict[str, Any]) -> Optional[str]:
-        """Generate appropriate health check command."""
-        framework = analysis.get('framework')
-        ports = analysis.get('expose_ports', [])
-        
-        if not ports:
-            return None
-        
-        port = ports[0]
-        
-        if framework in ['django', 'flask', 'fastapi']:
-            return f'curl -f http://localhost:{port}/health || exit 1'
-        elif framework == 'streamlit':
-            return f'curl -f http://localhost:{port}/_stcore/health || exit 1'
-        
-        return f'curl -f http://localhost:{port}/ || exit 1'
-
     def _prepare_template_variables(
         self,
         analysis: Dict[str, Any],
@@ -626,11 +525,8 @@ ENTRYPOINT {{ entrypoint }}
         package_manager: PackageManager,
         include_tests: bool,
         include_dev_deps: bool,
-        create_user: bool,
         optimize_size: bool
     ) -> Dict[str, Any]:
-        """Prepare all template variables."""
-        entrypoint, cmd = self._infer_start_command(analysis)
         
         # Filter dependency files to only include those that exist
         dependency_files = [
@@ -657,12 +553,6 @@ ENTRYPOINT {{ entrypoint }}
             'include_dev_deps': include_dev_deps,
             'run_tests': include_tests,
             'test_commands': self._get_test_commands(analysis) if include_tests else [],
-            'create_user': create_user,
-            'health_check': self._get_health_check_command(analysis),
-            'expose_ports': analysis.get('expose_ports', []),
-            'volumes': analysis.get('volumes', []),
-            'entrypoint': entrypoint,
-            'cmd': cmd,
             'setuptools_extras': self._get_setuptools_extras(analysis, include_tests),
         }
 
@@ -847,8 +737,6 @@ def generate_compose_file(analysis: Dict[str, Any], dockerfile_path: str = './Do
         docker-compose.yml content
     """
     repo_name = analysis.get('repo_name', 'app')
-    ports = analysis.get('expose_ports', [])
-    volumes = analysis.get('volumes', [])
     env_vars = analysis.get('environment_vars', {})
     
     compose_content = f"""version: '3.8'
@@ -862,15 +750,6 @@ services:
     container_name: {repo_name}
 """
     
-    if ports:
-        compose_content += "    ports:\n"
-        for port in ports:
-            compose_content += f"      - \"{port}:{port}\"\n"
-    
-    if volumes:
-        compose_content += "    volumes:\n"
-        for volume in volumes:
-            compose_content += f"      - {volume}\n"
     
     if env_vars:
         compose_content += "    environment:\n"
