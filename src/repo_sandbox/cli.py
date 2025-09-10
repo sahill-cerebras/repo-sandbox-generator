@@ -12,7 +12,6 @@ from git import Repo
 
 from .analyzer.repo_analyzer import RepositoryAnalyzer
 from .generators.dockerfile_generator import DockerfileGenerator
-from .generators.docker_compose_generator import DockerComposeGenerator
 
 
 @click.group()
@@ -24,27 +23,14 @@ def cli():
 
 @cli.command()
 @click.argument('repo_path', type=click.Path(exists=True, path_type=Path))
-@click.option('--output', '-o', default='./docker-config',
-              help='Output directory for generated files')
-@click.option('--template', default='auto',
-              help='Docker template to use (auto, slim, full, scientific)')
-@click.option('--python-version',
-              help='Override Python version detection')
-@click.option('--include-tests', is_flag=True,
-              help='Include test configuration in Docker setup')
-@click.option('--include-compose', is_flag=True,
-              help='Generate docker-compose.yml file')
-@click.option('--copy-source/--no-copy-source', default=True,
-              help='Copy full repository source into output directory (for standalone build)')
-@click.option('--verbose', '-v', is_flag=True,
-              help='Enable verbose output')
-@click.option('--test-node', 'test_nodes', multiple=True,
-              help='Explicit pytest node id (repeatable). Example: tests/test_mod.py::TestClass::test_case')
-@click.option('--test-nodes-json', 'test_nodes_json',
-              help='JSON array of pytest node ids. Example: "[\"tests/a.py::t1\", \"tests/b.py::t2\"]"')
+@click.option('--output', '-o', default='./docker-config', help='Output directory for generated files')
+@click.option('--template', default='auto', help='Docker template to use (auto, slim, full, scientific)')
+@click.option('--python-version', help='Override Python version detection')
+@click.option('--include-tests', is_flag=True, help='Include test configuration in Docker setup')
+@click.option('--copy-source/--no-copy-source', default=True, help='Copy full repository source into output directory (for standalone build)')
+@click.option('--verbose', '-v', is_flag=True, help='Enable verbose output')
 def generate(repo_path: Path, output: str, template: str, python_version: Optional[str],
-             include_tests: bool, include_compose: bool, copy_source: bool, verbose: bool,
-             test_nodes: tuple[str, ...], test_nodes_json: Optional[str]):
+             include_tests: bool, copy_source: bool, verbose: bool):
     """Generate Docker configuration for a repository"""
     
     output_path = Path(output)
@@ -72,45 +58,7 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
         click.echo(f"   Python version: {analysis['python_version']}")
         click.echo(f"   Dependencies: {len(analysis['python_packages'])} packages")
         click.echo(f"   System packages: {len(analysis['system_packages'])} packages")
-        click.echo(f"   Confidence: {analysis.get('confidence', 1.0):.2f}")
-    
-    # Merge manual test node specifications (if any)
-    manual_test_nodes: list[str] = []
-    if test_nodes:
-        manual_test_nodes.extend(list(test_nodes))
-    if test_nodes_json:
-        try:
-            import json as _json
-            parsed = _json.loads(test_nodes_json)
-            if isinstance(parsed, list):
-                manual_test_nodes.extend(str(x) for x in parsed)
-            else:
-                click.echo("⚠️  --test-nodes-json did not contain a JSON list; ignoring", err=True)
-        except Exception as e:
-            click.echo(f"⚠️  Could not parse --test-nodes-json: {e}", err=True)
-    # Deduplicate while preserving order
-    seen_nodes = set()
-    deduped_nodes: list[str] = []
-    for n in manual_test_nodes:
-        if n and n not in seen_nodes:
-            seen_nodes.add(n)
-            deduped_nodes.append(n)
-    if deduped_nodes:
-        # Construct a single pytest command with all node ids (could be chunked in future)
-        pytest_cmd = "python -m pytest " + " ".join(deduped_nodes)
-        analysis['test_config'] = {
-            'framework': 'pytest',
-            'test_paths': sorted({str(Path(node).parts[0]) for node in deduped_nodes if '::' in node} - {''}),
-            'test_commands': [pytest_cmd],
-            'environment_vars': analysis.get('test_config', {}).get('environment_vars', {}),
-            'config_files': analysis.get('test_config', {}).get('config_files', []),
-            'source': 'manual'
-        }
-        # Ensure include_tests gets enabled even if flag not passed
-        if not include_tests:
-            include_tests = True
-        if verbose:
-            click.echo(f"🧪 Using manually specified test nodes ({len(deduped_nodes)}). Auto-detection overridden.")
+    pass
 
     # Generate Docker configuration
     dockerfile_generator = DockerfileGenerator()
@@ -125,15 +73,6 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
         click.echo(f"❌ Error generating Dockerfile: {e}", err=True)
         raise click.Abort()
     
-    # Generate docker-compose if requested
-    compose_content = None
-    if include_compose:
-        compose_generator = DockerComposeGenerator()
-        try:
-            compose_content = compose_generator.generate_docker_compose(analysis)
-        except Exception as e:
-            click.echo(f"⚠️  Warning: Could not generate docker-compose.yml: {e}")
-    
     # Create output directory
     output_path.mkdir(parents=True, exist_ok=True)
     
@@ -144,10 +83,7 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
         dockerfile_path = output_path / 'Dockerfile'
         dockerfile_path.write_text(dockerfile_content)
 
-        # Write docker-compose.yml if generated
-        if compose_content:
-            compose_path = output_path / 'docker-compose.yml'
-            compose_path.write_text(compose_content)
+    # docker-compose file not generated anymore
 
         # Copy dependency definition files into output so Docker build context has them
         dep_files = [
@@ -180,7 +116,7 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
         if copy_source:
             if verbose:
                 click.echo("🗂  Copying source tree into output (excluding common ignore patterns)...")
-            ignore_names = {'.git', output_path.name, '__pycache__', '.mypy_cache', '.pytest_cache', 'build', 'dist', '.dockerignore', 'Dockerfile', 'docker-compose.yml', 'analysis.json'}
+            ignore_names = {'.git', output_path.name, '__pycache__', '.mypy_cache', '.pytest_cache', 'build', 'dist', '.dockerignore', 'Dockerfile', 'analysis.json'}
             for src_item in repo_path.rglob('*'):
                 rel = src_item.relative_to(repo_path)
                 if any(part in ignore_names for part in rel.parts):
@@ -203,8 +139,7 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
     click.echo(f"✅ Docker configuration generated in: {output_path}")
     click.echo("📁 Generated files:")
     click.echo(f"   - Dockerfile")
-    if compose_content:
-        click.echo(f"   - docker-compose.yml")
+    # docker-compose file no longer produced
     click.echo(f"   - analysis.json")
     click.echo(f"   - .dockerignore")
     if copy_source:
@@ -216,10 +151,7 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
     click.echo(f"\n🚀 To build and run:")
     click.echo(f"   cd {output_path}")
     click.echo(f"   docker build -t {analysis['repo_name'].lower()} .")
-    if compose_content:
-        click.echo(f"   docker-compose up")
-    else:
-        click.echo(f"   docker run -p 8000:8000 {analysis['repo_name'].lower()}")
+    click.echo(f"   docker run -p 8000:8000 {analysis['repo_name'].lower()}")
 
 
 @cli.command()
@@ -234,13 +166,8 @@ def generate(repo_path: Path, output: str, template: str, python_version: Option
               help='Clean up cloned repository after processing')
 @click.option('--verbose', '-v', is_flag=True,
               help='Enable verbose output')
-@click.option('--test-node', 'test_nodes', multiple=True,
-              help='Explicit pytest node id (repeatable). Passed through to generate.')
-@click.option('--test-nodes-json', 'test_nodes_json',
-              help='JSON array of pytest node ids. Passed through to generate.')
 def from_git(repo_url: str, clone_dir: Optional[str], output: str,
-             copy_source: bool, cleanup: bool, verbose: bool,
-             test_nodes: tuple[str, ...], test_nodes_json: Optional[str]):
+             copy_source: bool, cleanup: bool, verbose: bool):
     """Generate Docker config directly from a Git repository"""
     
     # Determine clone directory
@@ -269,12 +196,9 @@ def from_git(repo_url: str, clone_dir: Optional[str], output: str,
             output=output,
             template='auto',
             python_version=None,
-            include_tests=bool(test_nodes or test_nodes_json),
-            include_compose=False,
+            include_tests=False,
             copy_source=copy_source,
             verbose=verbose,
-            test_nodes=test_nodes,
-            test_nodes_json=test_nodes_json,
         )
         
     except Exception as e:
@@ -319,7 +243,7 @@ def analyze(repo_path: Path, output_format: str):
         click.echo(f"Python packages: {len(analysis['python_packages'])}")
         click.echo(f"System packages: {len(analysis['system_packages'])}")
         click.echo(f"Test framework: {analysis.get('test_config', {}).get('framework', 'None')}")
-        click.echo(f"Confidence: {analysis.get('confidence', 1.0):.2f}")
+    pass
 
 
 if __name__ == '__main__':

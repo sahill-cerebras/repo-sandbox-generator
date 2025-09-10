@@ -59,7 +59,6 @@ class DependencyResolver:
             'python_packages': set(),
             'system_packages': set(),
             'build_system': None,
-            'install_commands': [],
             'dependency_files': []
         }
         
@@ -80,7 +79,6 @@ class DependencyResolver:
         # Infer system dependencies and determine build system
         dependencies['system_packages'] = self._infer_system_dependencies(dependencies['python_packages'])
         dependencies['build_system'] = self._determine_build_system(repo_path, found_sources)
-        dependencies['install_commands'] = self._generate_install_commands(dependencies['build_system'], found_sources)
         dependencies['dependency_files'] = sorted(list(set(found_sources)))
 
         logger.info(f"Found {len(dependencies['python_packages'])} Python packages from sources: {dependencies['dependency_files']}")
@@ -396,21 +394,3 @@ class DependencyResolver:
             return 'pip'
         return None
     
-    def _generate_install_commands(self, build_system: Optional[str], found_sources: List[str]) -> List[str]:
-        """Generates appropriate installation commands based on the build system."""
-        if build_system in ['pyproject', 'setuptools']:
-            return ['python -m pip install -e .']
-        if build_system == 'pipenv':
-            return ['pipenv install --dev']
-        if build_system == 'conda':
-            return ['conda env create -f environment.yml']
-        if build_system == 'pip':
-            commands = []
-            if 'requirements.txt' in found_sources:
-                commands.append('python -m pip install -r requirements.txt')
-            # Add dev requirements if they exist
-            if any('dev' in s for s in found_sources):
-                dev_file = next((s for s in found_sources if 'dev' in s), 'requirements-dev.txt')
-                commands.append(f'python -m pip install -r {dev_file}')
-            return commands
-        return []

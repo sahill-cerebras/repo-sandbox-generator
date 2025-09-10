@@ -1,0 +1,2316 @@
+{
+  "results": [
+    {
+      "instance_id": "pvlib__pvlib-python-1160",
+      "image_tag": "sandbox_pvlib__pvlib-python-1160:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1191",
+      "image_tag": "sandbox_pvlib__pvlib-python-1191:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1138",
+      "image_tag": "sandbox_pvlib__pvlib-python-1138:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1186",
+      "image_tag": "sandbox_pvlib__pvlib-python-1186:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1140",
+      "image_tag": "sandbox_pvlib__pvlib-python-1140:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1213",
+      "image_tag": "sandbox_pvlib__pvlib-python-1213:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1154",
+      "image_tag": "sandbox_pvlib__pvlib-python-1154:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1181",
+      "image_tag": "sandbox_pvlib__pvlib-python-1181:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1157",
+      "image_tag": "sandbox_pvlib__pvlib-python-1157:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1193",
+      "image_tag": "sandbox_pvlib__pvlib-python-1193:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1165",
+      "image_tag": "sandbox_pvlib__pvlib-python-1165:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1093",
+      "image_tag": "sandbox_pvlib__pvlib-python-1093:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1176",
+      "image_tag": "sandbox_pvlib__pvlib-python-1176:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1458",
+      "image_tag": "sandbox_pvlib__pvlib-python-1458:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "manifest for python:3.9.7-bookworm not found: manifest unknown: manifest unknown\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1469",
+      "image_tag": "sandbox_pvlib__pvlib-python-1469:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "manifest for python:3.9.7-bookworm not found: manifest unknown: manifest unknown\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1478",
+      "image_tag": "sandbox_pvlib__pvlib-python-1478:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "manifest for python:3.9.7-bookworm not found: manifest unknown: manifest unknown\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1480",
+      "image_tag": "sandbox_pvlib__pvlib-python-1480:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "manifest for python:3.9.7-bookworm not found: manifest unknown: manifest unknown\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1426",
+      "image_tag": "sandbox_pvlib__pvlib-python-1426:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1273",
+      "image_tag": "sandbox_pvlib__pvlib-python-1273:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1216",
+      "image_tag": "sandbox_pvlib__pvlib-python-1216:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1218",
+      "image_tag": "sandbox_pvlib__pvlib-python-1218:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1448",
+      "image_tag": "sandbox_pvlib__pvlib-python-1448:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1225",
+      "image_tag": "sandbox_pvlib__pvlib-python-1225:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1239",
+      "image_tag": "sandbox_pvlib__pvlib-python-1239:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1224",
+      "image_tag": "sandbox_pvlib__pvlib-python-1224:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1349",
+      "image_tag": "sandbox_pvlib__pvlib-python-1349:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1368",
+      "image_tag": "sandbox_pvlib__pvlib-python-1368:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1296",
+      "image_tag": "sandbox_pvlib__pvlib-python-1296:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1518",
+      "image_tag": "sandbox_pvlib__pvlib-python-1518:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1395",
+      "image_tag": "sandbox_pvlib__pvlib-python-1395:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1739",
+      "image_tag": "sandbox_pvlib__pvlib-python-1739:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1719",
+      "image_tag": "sandbox_pvlib__pvlib-python-1719:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1666",
+      "image_tag": "sandbox_pvlib__pvlib-python-1666:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1653",
+      "image_tag": "sandbox_pvlib__pvlib-python-1653:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1740",
+      "image_tag": "sandbox_pvlib__pvlib-python-1740:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1682",
+      "image_tag": "sandbox_pvlib__pvlib-python-1682:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1737",
+      "image_tag": "sandbox_pvlib__pvlib-python-1737:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1707",
+      "image_tag": "sandbox_pvlib__pvlib-python-1707:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1616",
+      "image_tag": "sandbox_pvlib__pvlib-python-1616:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1738",
+      "image_tag": "sandbox_pvlib__pvlib-python-1738:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1589",
+      "image_tag": "sandbox_pvlib__pvlib-python-1589:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1623",
+      "image_tag": "sandbox_pvlib__pvlib-python-1623:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1606",
+      "image_tag": "sandbox_pvlib__pvlib-python-1606:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1822",
+      "image_tag": "sandbox_pvlib__pvlib-python-1822:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1852",
+      "image_tag": "sandbox_pvlib__pvlib-python-1852:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1832",
+      "image_tag": "sandbox_pvlib__pvlib-python-1832:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1782",
+      "image_tag": "sandbox_pvlib__pvlib-python-1782:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1764",
+      "image_tag": "sandbox_pvlib__pvlib-python-1764:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1854",
+      "image_tag": "sandbox_pvlib__pvlib-python-1854:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel build cython || true &&     if grep -q \"\\[tool.poetry\\]\" pyproject.toml 2>/dev/null; then         pip install poetry &&         poetry config virtualenvs.create false &&         poetry install --no-dev;     elif grep -q \"\\[tool.flit\\]\" pyproject.toml 2>/dev/null || grep -q \"flit_core\" pyproject.toml 2>/dev/null; then         pip install flit &&         python -m build --wheel &&         pip install --no-cache-dir dist/*.whl;     else         pip install --no-cache-dir -e .[test] 2>/dev/null ||         pip install --no-cache-dir -e . 2>/dev/null ||         (python -m build --wheel && pip install --no-cache-dir dist/*.whl);     fi' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-823",
+      "image_tag": "sandbox_pvlib__pvlib-python-823:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pydicom__pydicom-1048",
+      "image_tag": "sandbox_pydicom__pydicom-1048:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1069",
+      "image_tag": "sandbox_pydicom__pydicom-1069:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 192,
+        "skipped": 96
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1031",
+      "image_tag": "sandbox_pydicom__pydicom-1031:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 57,
+        "passed": 92
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1033",
+      "image_tag": "sandbox_pydicom__pydicom-1033:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 16,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1090",
+      "image_tag": "sandbox_pydicom__pydicom-1090:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 61,
+        "passed": 94
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1139",
+      "image_tag": "sandbox_pydicom__pydicom-1139:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 2,
+        "passed": 36
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1194",
+      "image_tag": "sandbox_pydicom__pydicom-1194:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 65,
+        "passed": 97
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1236",
+      "image_tag": "sandbox_pydicom__pydicom-1236:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1241",
+      "image_tag": "sandbox_pydicom__pydicom-1241:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1228",
+      "image_tag": "sandbox_pydicom__pydicom-1228:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 21
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1192",
+      "image_tag": "sandbox_pydicom__pydicom-1192:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 44,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1255",
+      "image_tag": "sandbox_pydicom__pydicom-1255:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 22
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1256",
+      "image_tag": "sandbox_pydicom__pydicom-1256:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 22
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1334",
+      "image_tag": "sandbox_pydicom__pydicom-1334:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 2,
+        "passed": 62
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1000",
+      "image_tag": "sandbox_pydicom__pydicom-1000:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 65,
+        "failed": 16,
+        "errors": 0,
+        "invalid": 13
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1050",
+      "image_tag": "sandbox_pydicom__pydicom-1050:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 67,
+        "failed": 21,
+        "errors": 0,
+        "invalid": 13
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1416",
+      "image_tag": "sandbox_pydicom__pydicom-1416:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 2,
+        "passed": 197,
+        "skipped": 108
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1017",
+      "image_tag": "sandbox_pydicom__pydicom-1017:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 66,
+        "failed": 7,
+        "errors": 0,
+        "invalid": 13
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1539",
+      "image_tag": "sandbox_pydicom__pydicom-1539:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 65,
+        "passed": 98
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1555",
+      "image_tag": "sandbox_pydicom__pydicom-1555:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 2,
+        "passed": 197,
+        "skipped": 106
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1562",
+      "image_tag": "sandbox_pydicom__pydicom-1562:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 16
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1076",
+      "image_tag": "sandbox_pydicom__pydicom-1076:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 178,
+        "failed": 82,
+        "errors": 0,
+        "invalid": 14
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1428",
+      "image_tag": "sandbox_pydicom__pydicom-1428:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 130,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 9
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1375",
+      "image_tag": "sandbox_pydicom__pydicom-1375:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 196,
+        "failed": 5,
+        "errors": 0,
+        "invalid": 12
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1439",
+      "image_tag": "sandbox_pydicom__pydicom-1439:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 58,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 21
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1598",
+      "image_tag": "sandbox_pydicom__pydicom-1598:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 132,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 9
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1694",
+      "image_tag": "sandbox_pydicom__pydicom-1694:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 26
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1674",
+      "image_tag": "sandbox_pydicom__pydicom-1674:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 44,
+        "failed": 5,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1720",
+      "image_tag": "sandbox_pydicom__pydicom-1720:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-809",
+      "image_tag": "sandbox_pydicom__pydicom-809:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 54,
+        "passed": 88
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1413",
+      "image_tag": "sandbox_pydicom__pydicom-1413:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 256,
+        "failed": 7,
+        "errors": 0,
+        "invalid": 38
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-800",
+      "image_tag": "sandbox_pydicom__pydicom-800:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 38,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-793",
+      "image_tag": "sandbox_pydicom__pydicom-793:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 56,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 16
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-839",
+      "image_tag": "sandbox_pydicom__pydicom-839:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 54,
+        "passed": 87
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-816",
+      "image_tag": "sandbox_pydicom__pydicom-816:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 34,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-811",
+      "image_tag": "sandbox_pydicom__pydicom-811:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 72,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 13
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-863",
+      "image_tag": "sandbox_pydicom__pydicom-863:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 39,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-897",
+      "image_tag": "sandbox_pydicom__pydicom-897:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 32,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 12
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-901",
+      "image_tag": "sandbox_pydicom__pydicom-901:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1458",
+      "image_tag": "sandbox_pydicom__pydicom-1458:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 109,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 50
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1365",
+      "image_tag": "sandbox_pydicom__pydicom-1365:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 294,
+        "failed": 70,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-903",
+      "image_tag": "sandbox_pydicom__pydicom-903:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 53,
+        "passed": 90
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-916",
+      "image_tag": "sandbox_pydicom__pydicom-916:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-900",
+      "image_tag": "sandbox_pydicom__pydicom-900:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 29,
+        "failed": 5,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-938",
+      "image_tag": "sandbox_pydicom__pydicom-938:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 4,
+        "passed": 29
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-944",
+      "image_tag": "sandbox_pydicom__pydicom-944:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 15
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-965",
+      "image_tag": "sandbox_pydicom__pydicom-965:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "failed": 5,
+        "passed": 33
+      },
+      "return_code": 1,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-995",
+      "image_tag": "sandbox_pydicom__pydicom-995:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-997",
+      "image_tag": "sandbox_pydicom__pydicom-997:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-958",
+      "image_tag": "sandbox_pydicom__pydicom-958:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 39,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1030",
+      "image_tag": "sandbox_pylint-dev__astroid-1030:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pydicom__pydicom-866",
+      "image_tag": "sandbox_pydicom__pydicom-866:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 91,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 47
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1196",
+      "image_tag": "sandbox_pylint-dev__astroid-1196:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 24
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-933",
+      "image_tag": "sandbox_pydicom__pydicom-933:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 62,
+        "failed": 16,
+        "errors": 0,
+        "invalid": 13
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1262",
+      "image_tag": "sandbox_pylint-dev__astroid-1262:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 21
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1268",
+      "image_tag": "sandbox_pylint-dev__astroid-1268:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 91
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1333",
+      "image_tag": "sandbox_pylint-dev__astroid-1333:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 46
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1608",
+      "image_tag": "sandbox_pydicom__pydicom-1608:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 298,
+        "failed": 2,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1364",
+      "image_tag": "sandbox_pylint-dev__astroid-1364:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1417",
+      "image_tag": "sandbox_pylint-dev__astroid-1417:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 3
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-1633",
+      "image_tag": "sandbox_pydicom__pydicom-1633:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 310,
+        "failed": 2,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1614",
+      "image_tag": "sandbox_pylint-dev__astroid-1614:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 8,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1616",
+      "image_tag": "sandbox_pylint-dev__astroid-1616:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 8,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1719",
+      "image_tag": "sandbox_pylint-dev__astroid-1719:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 10
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1741",
+      "image_tag": "sandbox_pylint-dev__astroid-1741:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-996",
+      "image_tag": "sandbox_pydicom__pydicom-996:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 88,
+        "failed": 57,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1866",
+      "image_tag": "sandbox_pylint-dev__astroid-1866:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1959",
+      "image_tag": "sandbox_pylint-dev__astroid-1959:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 11
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1903",
+      "image_tag": "sandbox_pylint-dev__astroid-1903:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 9,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1962",
+      "image_tag": "sandbox_pylint-dev__astroid-1962:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 11
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-2015",
+      "image_tag": "sandbox_pylint-dev__astroid-2015:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1978",
+      "image_tag": "sandbox_pylint-dev__astroid-1978:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 12
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-2023",
+      "image_tag": "sandbox_pylint-dev__astroid-2023:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 5
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-2219",
+      "image_tag": "sandbox_pylint-dev__astroid-2219:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-2309",
+      "image_tag": "sandbox_pylint-dev__astroid-2309:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-2307",
+      "image_tag": "sandbox_pylint-dev__astroid-2307:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pydicom__pydicom-955",
+      "image_tag": "sandbox_pydicom__pydicom-955:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 325,
+        "failed": 16,
+        "errors": 0,
+        "invalid": 13
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1164",
+      "image_tag": "sandbox_pylint-dev__astroid-1164:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 240,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1351",
+      "image_tag": "sandbox_pylint-dev__astroid-1351:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 191,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-984",
+      "image_tag": "sandbox_pylint-dev__astroid-984:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 42
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-941",
+      "image_tag": "sandbox_pylint-dev__astroid-941:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 105,
+        "failed": 1,
+        "errors": 0,
+        "invalid": 7
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pyvista__pyvista-3675",
+      "image_tag": "sandbox_pyvista__pyvista-3675:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-1092",
+      "image_tag": "sandbox_pylint-dev__astroid-1092:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 310,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-2240",
+      "image_tag": "sandbox_pylint-dev__astroid-2240:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 176,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pyvista__pyvista-3710",
+      "image_tag": "sandbox_pyvista__pyvista-3710:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 36
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pyvista__pyvista-4226",
+      "image_tag": "sandbox_pyvista__pyvista-4226:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4225",
+      "image_tag": "sandbox_pyvista__pyvista-4225:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-3750",
+      "image_tag": "sandbox_pyvista__pyvista-3750:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c conda env create -f /tmp/environment.yml -n app && conda clean -a -y && echo \"Activated conda env 'app'\" &&     echo \"dependencies captured from environment.yml\" &&     true' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4315",
+      "image_tag": "sandbox_pyvista__pyvista-4315:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 23\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-432",
+      "image_tag": "sandbox_pyvista__pyvista-432:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "failed to register layer: Error processing tar file(exit status 1): open /usr/share/doc/libwebpmux1/copyright: no space left on device\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4311",
+      "image_tag": "sandbox_pyvista__pyvista-4311:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4329",
+      "image_tag": "sandbox_pyvista__pyvista-4329:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4406",
+      "image_tag": "sandbox_pyvista__pyvista-4406:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4414",
+      "image_tag": "sandbox_pyvista__pyvista-4414:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-3747",
+      "image_tag": "sandbox_pyvista__pyvista-3747:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error processing tar file(exit status 1): write /opt/conda/envs/app/lib/libLLVM.so.21.1: no space left on device\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4417",
+      "image_tag": "sandbox_pyvista__pyvista-4417:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4648",
+      "image_tag": "sandbox_pyvista__pyvista-4648:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4808",
+      "image_tag": "sandbox_pyvista__pyvista-4808:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "pyvista__pyvista-4853",
+      "image_tag": "sandbox_pyvista__pyvista-4853:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh &&     bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     touch /opt/conda/.conda_installed' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-1733",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-1733:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-1577",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-1577:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 23,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 7
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-1517",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-1517:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 17,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 25
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-946",
+      "image_tag": "sandbox_pylint-dev__astroid-946:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 151,
+        "failed": 1,
+        "errors": 0,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2326",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2326:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2336",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2336:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2419",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2419:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2386",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2386:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 3,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 1
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-1625",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-1625:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 57,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 7
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2641",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2641:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-1763",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-1763:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 61,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-934",
+      "image_tag": "sandbox_pylint-dev__astroid-934:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 302,
+        "failed": 0,
+        "errors": 5,
+        "invalid": 5
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-927",
+      "image_tag": "sandbox_pylint-dev__astroid-927:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 313,
+        "failed": 0,
+        "errors": 4,
+        "invalid": 3
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2846",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2846:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 35,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 7
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2509",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2509:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 73,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2849",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2849:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 46,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 8
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2998",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2998:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 35
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3109",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3109:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 0
+      },
+      "return_code": 0,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2573",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2573:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 75,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 2
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3220",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3220:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "failed to copy files: failed to copy directory: Error processing tar file(exit status 1): open /test/fixtures/dialects/ansi/select_n.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2625",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2625:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 14,
+        "failed": 60,
+        "errors": 0,
+        "invalid": 12
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3330",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3330:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "failed to copy files: failed to copy directory: Error processing tar file(exit status 1): open /test/fixtures/dialects/mysql/select_sql_buffer_result.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3354",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3354:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error processing tar file(exit status 1): write /app/bin/act: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2907",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2907:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 36,
+        "failed": 0,
+        "errors": 0,
+        "invalid": 9
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3411",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3411:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /src/sqlfluff/rules/L051.py: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3435",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3435:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "failed to copy files: failed to copy directory: Error processing tar file(exit status 1): open /test/fixtures/dialects/postgres/postgres_alter_table.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3436",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3436:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/redshift/redshift_alter_schema.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-2862",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-2862:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 47,
+        "failed": 0,
+        "errors": 9,
+        "invalid": 4
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3608",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3608:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/linter/autofix/ansi/L042_subqueries_in_joins/test-config.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3648",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3648:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/sparksql/alter_view.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3662",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3662:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/exasol/CreateUDFScriptDotSyntax.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3700",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3700:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /CODE_OF_CONDUCT.md: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3066",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3066:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 32,
+        "failed": 2,
+        "errors": 18,
+        "invalid": 0
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3904",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3904:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/sparksql/select_from_values.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4041",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4041:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/snowflake/snowflake_alter_task_add_after.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4043",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4043:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/mysql/optimize_table.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4084",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4084:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /.git: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4051",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4051:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --no-cache-dir -r /tmp/requirements.txt' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4151",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4151:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --no-cache-dir -r /tmp/requirements.txt' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4753",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4753:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --no-cache-dir -r /tmp/requirements.txt' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4764",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4764:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --no-cache-dir -r /tmp/requirements.txt' returned a non-zero code: 1\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4777",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4777:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/snowflake/snowflake_object_literals.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4778",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4778:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/materialize/materialize_subscribe_fetch_statements.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4834",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4834:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/ansi/create_table_a_pk_unique_fk_constraints.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-880",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-880:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "write /var/lib/docker/tmp/GetImageBlob042626461: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-884",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-884:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /src/sqlfluff/core/templaters/dbt.py: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-4997",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-4997:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/dialects/sparksql/delta_describe_detail.sql: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-891",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-891:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "write /var/lib/docker/tmp/GetImageBlob989284511: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-5074",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-5074:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/fixtures/rules/std_rule_cases/JJ01.yml: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-5170",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-5170:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "open /var/lib/docker/containers/9c2daad9d2527c6022929071ea180ed79baa66b2bb9e3ce9c75cf771ad1090a1/.tmp-config.v2.json315602019: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-905",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-905:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "write /var/lib/docker/tmp/GetImageBlob696677447: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-5206",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-5206:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "Error response from daemon: Error processing tar file(exit status 1): open /test/conftest.py: no space left on device\n"
+    },
+    {
+      "instance_id": "sqlfluff__sqlfluff-3170",
+      "image_tag": "sandbox_sqlfluff__sqlfluff-3170:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 14,
+        "failed": 68,
+        "errors": 7,
+        "invalid": 10
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pylint-dev__astroid-983",
+      "image_tag": "sandbox_pylint-dev__astroid-983:latest",
+      "build_ok": true,
+      "test_invoked": true,
+      "counts": {
+        "passed": 414,
+        "failed": 2,
+        "errors": 9,
+        "invalid": 4
+      },
+      "return_code": 4,
+      "error": null
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1031",
+      "image_tag": "sandbox_pvlib__pvlib-python-1031:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1033",
+      "image_tag": "sandbox_pvlib__pvlib-python-1033:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-907",
+      "image_tag": "sandbox_pvlib__pvlib-python-907:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-1026",
+      "image_tag": "sandbox_pvlib__pvlib-python-1026:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-763",
+      "image_tag": "sandbox_pvlib__pvlib-python-763:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-980",
+      "image_tag": "sandbox_pvlib__pvlib-python-980:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-718",
+      "image_tag": "sandbox_pvlib__pvlib-python-718:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    },
+    {
+      "instance_id": "pvlib__pvlib-python-807",
+      "image_tag": "sandbox_pvlib__pvlib-python-807:latest",
+      "build_ok": false,
+      "test_invoked": false,
+      "counts": {},
+      "return_code": 0,
+      "error": "The command '/bin/sh -c pip install --upgrade pip setuptools wheel &&     pip install --no-cache-dir  -e .[test,optional,doc]' returned a non-zero code: 137\n"
+    }
+  ],
+  "total": 8685,
+  "passed": 7762,
+  "failed": 871,
+  "errors": 52,
+  "skipped": 14
+}

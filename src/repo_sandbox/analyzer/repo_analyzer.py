@@ -12,12 +12,8 @@ from .version_detector import PythonVersionDetector
 logger = logging.getLogger(__name__)
 
 # --- Constants ---
-DEFAULT_PYTHON_VERSION = '3.9'
-DEFAULT_EXPOSE_PORT = 8000
-CONFIDENCE_NO_DEPS = 0.8
-CONFIDENCE_PER_ERROR = 0.9
-CONFIDENCE_BOOST_TESTS = 1.1
-CONFIDENCE_BOOST_BUILD_SYSTEM = 1.05
+DEFAULT_PYTHON_VERSION = '3.11'
+DEFAULT_EXPOSE_PORT = 8000  # retained constant though expose logic removed
 
 
 class AnalysisKeys(str, Enum):
@@ -29,10 +25,7 @@ class AnalysisKeys(str, Enum):
     SYSTEM_PACKAGES = 'system_packages'
     ENVIRONMENT_VARS = 'environment_vars'
     TEST_CONFIG = 'test_config'
-    INSTALL_COMMANDS = 'install_commands'
-    EXPOSE_PORTS = 'expose_ports'
     BUILD_SYSTEM = 'build_system'
-    CONFIDENCE = 'confidence'
     ERRORS = 'errors'
 
 
@@ -64,10 +57,7 @@ class RepositoryAnalyzer:
             AnalysisKeys.SYSTEM_PACKAGES: [],
             AnalysisKeys.ENVIRONMENT_VARS: {},
             AnalysisKeys.TEST_CONFIG: {},
-            AnalysisKeys.INSTALL_COMMANDS: [],
-            AnalysisKeys.EXPOSE_PORTS: [DEFAULT_EXPOSE_PORT],
             AnalysisKeys.BUILD_SYSTEM: None,
-            AnalysisKeys.CONFIDENCE: 1.0,
             AnalysisKeys.ERRORS: []
         }
         
@@ -89,12 +79,8 @@ class RepositoryAnalyzer:
             logger.info("Applying generic Python project rules...")
             analysis = self._apply_generic_rules(analysis)
             
-            # 5. Calculate final confidence score
-            analysis[AnalysisKeys.CONFIDENCE] = self._calculate_confidence(analysis)
-            
         except Exception as e:
             logger.error(f"A critical error occurred during analysis: {e}", exc_info=logger.isEnabledFor(logging.DEBUG))
-            analysis[AnalysisKeys.CONFIDENCE] = 0.5
             analysis[AnalysisKeys.ERRORS].append(str(e))
         
         return analysis
@@ -108,44 +94,4 @@ class RepositoryAnalyzer:
             'PYTHONDONTWRITEBYTECODE': '1'
         })
         
-        # Set default install commands ONLY if resolver didn't provide them
-        if not analysis[AnalysisKeys.INSTALL_COMMANDS]:
-            build_system = analysis[AnalysisKeys.BUILD_SYSTEM]
-            if build_system == 'pyproject' or build_system == 'setuptools':
-                analysis[AnalysisKeys.INSTALL_COMMANDS] = ['python -m pip install -e .']
-            elif build_system == 'pip':
-                analysis[AnalysisKeys.INSTALL_COMMANDS] = ['python -m pip install -r requirements.txt']
-            else:
-                # A safe fallback if no build system was detected
-                analysis[AnalysisKeys.INSTALL_COMMANDS] = ['echo "No primary install method detected."']
-        
         return analysis
-    
-    def _calculate_confidence(self, analysis: Dict[str, Any]) -> float:
-        """
-        Calculates a confidence score for the analysis based on detected signals.
-        
-        Args:
-            analysis: The current analysis dictionary.
-        
-        Returns:
-            A confidence score between 0.0 and 1.0.
-        """
-        confidence = 1.0
-        
-        # Reduce confidence if no Python packages were found.
-        if not analysis[AnalysisKeys.PYTHON_PACKAGES]:
-            confidence *= CONFIDENCE_NO_DEPS
-        
-        # Reduce confidence for each error encountered during the process.
-        confidence *= (CONFIDENCE_PER_ERROR ** len(analysis[AnalysisKeys.ERRORS]))
-        
-        # Increase confidence if a specific test framework was found.
-        if analysis[AnalysisKeys.TEST_CONFIG].get('framework'):
-            confidence *= CONFIDENCE_BOOST_TESTS
-        
-        # Increase confidence if a known build system was identified.
-        if analysis.get(AnalysisKeys.BUILD_SYSTEM):
-            confidence *= CONFIDENCE_BOOST_BUILD_SYSTEM
-        
-        return min(confidence, 1.0)

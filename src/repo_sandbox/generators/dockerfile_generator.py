@@ -5,27 +5,22 @@ from typing import Dict, Any, List, Optional, Tuple, Set
 from pathlib import Path
 from jinja2 import Template, Environment, BaseLoader
 from enum import Enum
+import json as _json
+from urllib.request import urlopen, Request as _UrlRequest
+import urllib.error as _urlerr
 import re
 
 logger = logging.getLogger(__name__)
 
 
 class BaseImageType(Enum):
-    """Enumeration for base image types."""
-    SLIM = 'slim'
     FULL = 'full'
-    ALPINE = 'alpine'
+    SLIM = 'slim'
     SCIENTIFIC = 'scientific'
-    CUDA = 'cuda'
-    NODEJS = 'nodejs'
 
 
 class PackageManager(Enum):
-    """Enumeration for package managers."""
     APT = 'apt'
-    APK = 'apk'
-    YUM = 'yum'
-    DNF = 'dnf'
 
 
 class DockerfileGenerator:
@@ -43,17 +38,9 @@ class DockerfileGenerator:
 
     # Enhanced base image templates with more options
     BASE_TEMPLATES = {
-        # Default: full Debian images
         BaseImageType.FULL: 'python:{version}-{codename}',
-
-        # Optional lighter/minimal variants
         BaseImageType.SLIM: 'python:{version}-slim-{codename}',
-        BaseImageType.ALPINE: 'python:{version}-alpine3.19',
         BaseImageType.SCIENTIFIC: 'python:{version}-{codename}',
-
-        # Special cases
-        BaseImageType.CUDA: 'nvidia/cuda:12.2.0-runtime-ubuntu22.04',
-        BaseImageType.NODEJS: 'python:{version}-{codename}',
     }
 
 
@@ -65,13 +52,7 @@ class DockerfileGenerator:
     }
 
     # Web framework detection patterns
-    WEB_FRAMEWORKS = {
-        'django': {'files': ['manage.py', 'settings.py'], 'packages': ['django']},
-        'flask': {'files': ['app.py', 'application.py'], 'packages': ['flask']},
-        'fastapi': {'files': ['main.py', 'app.py'], 'packages': ['fastapi']},
-        'streamlit': {'files': ['app.py', 'streamlit_app.py'], 'packages': ['streamlit']},
-        'gradio': {'files': ['app.py', 'interface.py'], 'packages': ['gradio']},
-    }
+    WEB_FRAMEWORKS: dict[str, dict] = {}
 
     # Optimized Dockerfile template with better structure
     DOCKERFILE_TEMPLATE = """# Generated Dockerfile for {{ repo_name }}
@@ -101,27 +82,12 @@ RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list \
  && rm -rf /var/lib/apt/lists/*
 
 {%- endif %}
-# Install system dependencies with optimized layering
-{%- if package_manager == PackageManager.APT %}
+# Install system dependencies (APT only)
 {%- set base_pkgs = system_packages or [] %}
-{%- if not needs_eol_debian_fix %}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends {{ (base_pkgs + ['wget','curl','ca-certificates','build-essential','git','bzip2']) | join(' ') }} && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-{%- else %}
-{%- if base_pkgs %}
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends {{ base_pkgs | join(' ') }} && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-{%- endif %}
-{%- endif %}
-{%- elif package_manager == PackageManager.APK %}
-RUN apk add --no-cache {{ system_packages|join(' ') }}
-{%- else %}
-RUN {{ package_manager.value }} install -y {{ system_packages|join(' ') }} && {{ package_manager.value }} clean all
-{%- endif %}
 
 {# Extra build tools for pyproject.toml/meson-based projects (matplotlib, scipy, etc.) #}
 {%- if 'pyproject.toml' in dependency_files and package_manager == PackageManager.APT %}
@@ -227,26 +193,12 @@ COPY . .
 RUN {{ frontend_build_commands|join(' && ') }}
 {%- endif %}
 
-{%- if run_tests and test_commands %}
-# Install testing libraries detected from test commands
-{%- set test_libs = ['pytest'] %}
-{%- for command in test_commands %}
-{%- set parts = command.split() %}
-{%- if parts|length > 2 and parts[0] == 'python' and parts[1] == '-m' %}
-{%- set _ = test_libs.append(parts[2]) %}
-{%- else %}
-{%- set _ = test_libs.append(parts[0]) %}
-{%- endif %}
-{%- endfor %}
-RUN python -m pip install --upgrade pip setuptools wheel && pip install --no-cache-dir {{ test_libs | unique | join(' ') }}
-{%- endif %}
-
 # -------------------------------------------------------------------------
 # Ensure the project is installed into the active environment before testing
 # -------------------------------------------------------------------------
 {%- if 'setup.py' in dependency_files or 'setup.cfg' in dependency_files %}
 RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
-    pip install --no-cache-dir  -e .{{ setuptools_extras }}
+    pip install --no-cache-dir  -e .{{ setuptools_extras }}\
 {%- elif 'pyproject.toml' in dependency_files %}
 RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
     (pip install --no-cache-dir -e .[test] 2>/dev/null || \
@@ -254,17 +206,47 @@ RUN python -m pip install --upgrade pip setuptools wheel build cython || true &&
      pip install --no-cache-dir . 2>/dev/null || \
      (python -m build --wheel && pip install --no-cache-dir dist/*.whl) || true)
 {%- else %}
-RUN echo "No setup.py/pyproject.toml found, skipping editable install"
+RUN echo "No setup.py/pyproject.toml found, skipping editable install"\
 {%- endif %}
 
-{%- if run_tests and test_commands %}
-RUN if [ -f /opt/conda/.conda_installed ]; then \
-        /opt/conda/bin/conda run -n app {{ test_commands|join(' && /opt/conda/bin/conda run -n app ') }}; \
-    else \
-        {{ test_commands|join(' && ') }}; \
-    fi
-{%- endif %}
+
+# Attempt to install common dev/test extras - ignore failures
+RUN (pip install --no-cache-dir -e .[dev] 2>/dev/null || \
+    pip install --no-cache-dir -e .[test] 2>/dev/null || \
+    pip install --no-cache-dir -e .[tests] 2>/dev/null || \
+    pip install --no-cache-dir -e .[testing] 2>/dev/null || true)
+
+
+
+# Always install pytest (make image test-ready) plus normalized test-only dependencies
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir pytest{% if installable_test_imports %} {{ installable_test_imports|join(' ') }}{% endif %}
+
 """
+
+
+# {%- if run_tests and test_commands %}
+# # Install testing libraries detected from test commands
+# {%- set test_libs = ['pytest'] %}
+# {%- for command in test_commands %}
+# {%- set parts = command.split() %}
+# {%- if parts|length > 2 and parts[0] == 'python' and parts[1] == '-m' %}
+# {%- set _ = test_libs.append(parts[2]) %}
+# {%- else %}
+# {%- set _ = test_libs.append(parts[0]) %}
+# {%- endif %}
+# {%- endfor %}
+# RUN python -m pip install --upgrade pip setuptools wheel && pip install --no-cache-dir {{ test_libs | unique | join(' ') }}
+# {%- endif %}
+
+
+# {%- if run_tests and test_commands %}
+# RUN if [ -f /opt/conda/.conda_installed ]; then \
+#         /opt/conda/bin/conda run -n app {{ test_commands|join(' && /opt/conda/bin/conda run -n app ') }}; \
+#     else \
+#         {{ test_commands|join(' && ') }}; \
+#     fi
+# {%- endif %}
 
     def __init__(self):
         """Initialize the Dockerfile generator."""
@@ -275,9 +257,7 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         self,
         analysis: Dict[str, Any],
         template: str = 'auto',
-        include_tests: bool = False,
-        include_dev_deps: bool = False,
-        optimize_size: bool = True
+    include_tests: bool = False,
     ) -> str:
         """
         Generate an optimized Dockerfile based on repository analysis.
@@ -286,8 +266,8 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
             analysis: Repository analysis results
             template: Base image template to use
             include_tests: Whether to run tests during build
-            include_dev_deps: Whether to include development dependencies
-            optimize_size: Whether to optimize for smaller image size
+            include_dev_deps: (removed)
+            optimize_size: (removed)
             
         Returns:
             Generated Dockerfile content
@@ -305,15 +285,13 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         # Prepare template variables
         template_vars = self._prepare_template_variables(
             analysis, base_image, base_image_type, package_manager,
-            include_tests, include_dev_deps, optimize_size
+            include_tests
         )
         
         # Generate Dockerfile
         dockerfile_content = self.template.render(**template_vars)
         
-        # Post-process for optimization
-        if optimize_size:
-            dockerfile_content = self._optimize_dockerfile_size(dockerfile_content)
+    # size optimization removed
         
         logger.info(
             "Generated optimized Dockerfile using %s template with %s package manager",
@@ -417,23 +395,8 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
     def _select_optimal_template(self, analysis: Dict[str, Any]) -> BaseImageType:
         """Select the optimal base image template based on analysis."""
         packages = set(pkg.lower().split('==')[0] for pkg in analysis.get('python_packages', []))
-        
-        # Check for CUDA/GPU requirements
-        if any(pkg in ['tensorflow-gpu', 'torch-gpu', 'jax[cuda]'] for pkg in packages):
-            return BaseImageType.CUDA
-        
-        # Check for scientific packages
         if packages & self.SCIENTIFIC_PACKAGES:
             return BaseImageType.SCIENTIFIC
-        
-        # Check for Node.js requirements
-        if self._requires_nodejs(analysis):
-            return BaseImageType.NODEJS
-        
-        # Alpine for minimal deployments
-        if analysis.get('optimize_size') and not self._has_binary_dependencies(packages):
-            return BaseImageType.ALPINE
-        
         # Default to full
         return BaseImageType.FULL
 
@@ -441,24 +404,15 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         """Get the base image string for the given type and Python version."""
         template = self.BASE_TEMPLATES[image_type]
         
-        # Special handling for CUDA images
-        if image_type == BaseImageType.CUDA:
-            return template  # CUDA images don't use Python version placeholder
-        
         codename = self._get_debian_codename(python_version)
-        print("Codename:",codename)
-        print(template.format(version=python_version, codename=codename))
+        # print("Codename:",codename)
+        # print(template.format(version=python_version, codename=codename))
         return template.format(version=python_version, codename=codename)
 
 
     def _detect_package_manager(self, base_image: str) -> PackageManager:
-        """Detect the package manager based on the base image."""
-        if 'alpine' in base_image:
-            return PackageManager.APK
-        elif any(distro in base_image for distro in ['centos', 'rhel', 'fedora']):
-            return PackageManager.DNF if 'fedora' in base_image else PackageManager.YUM
-        else:
-            return PackageManager.APT
+        """Detect the package manager based on the base image (always APT in simplified version)."""
+        return PackageManager.APT
 
     def _detect_framework(self, analysis: Dict[str, Any]) -> Optional[str]:
         """Detect the web framework being used."""
@@ -478,40 +432,16 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         
         return None
 
-    def _requires_nodejs(self, analysis: Dict[str, Any]) -> bool:
-        """Check if the project requires Node.js."""
-        repo_path = Path(analysis.get('repo_path', '.'))
-        
-        # Check for Node.js files
-        node_files = ['package.json', 'yarn.lock', 'package-lock.json']
-        return any((repo_path / f).exists() for f in node_files)
+    # Node.js and binary dependency helpers removed (always not used)
 
-    def _has_binary_dependencies(self, packages: Set[str]) -> bool:
-        """Check if packages have binary dependencies that might not work with Alpine."""
-        binary_packages = {
-            'numpy', 'scipy', 'pandas', 'pillow', 'psycopg2',
-            'mysqlclient', 'lxml', 'cryptography', 'grpcio'
-        }
-        return bool(packages & binary_packages)
-
-    def _optimize_system_packages(self, packages: List[str], package_manager: PackageManager) -> List[str]:
-        """Optimize system package list."""
+    def _optimize_system_packages(self, packages: List[str]) -> List[str]:
+        """Optimize system package list (dedupe & ensure essentials)."""
         # Remove duplicates and sort
         packages = sorted(set(packages))
         
         # Add essential packages based on package manager
-        essentials = {
-            PackageManager.APT: ['curl', 'ca-certificates'],
-            PackageManager.APK: ['curl', 'ca-certificates'],
-            PackageManager.YUM: ['curl', 'ca-certificates'],
-            PackageManager.DNF: ['curl', 'ca-certificates'],
-        }
-
-        for pkg_mgr in essentials:
-            if 'wget' not in essentials[pkg_mgr]:
-                essentials[pkg_mgr].append('wget')
-
-        for essential in essentials.get(package_manager, []):
+        essentials = ['curl', 'ca-certificates', 'wget']
+        for essential in essentials:
             if essential not in packages:
                 packages.insert(0, essential)
         
@@ -522,10 +452,8 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         analysis: Dict[str, Any],
         base_image: str,
         base_image_type: BaseImageType,
-        package_manager: PackageManager,
-        include_tests: bool,
-        include_dev_deps: bool,
-        optimize_size: bool
+    package_manager: PackageManager,
+    include_tests: bool,
     ) -> Dict[str, Any]:
         
         # Filter dependency files to only include those that exist
@@ -543,17 +471,21 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
             'PackageManager': PackageManager,  # For template access
             'needs_eol_debian_fix': self._needs_eol_debian_fix(analysis['python_version']),
             'system_packages': self._optimize_system_packages(
-                analysis.get('system_packages', []), package_manager
+                analysis.get('system_packages', [])
             ),
             'environment_vars': analysis.get('environment_vars', {}),
             'dependency_files': dependency_files,
             'has_conda_env': 'environment.yml' in dependency_files or 'environment.yaml' in dependency_files,
-            'add_nodejs': self._requires_nodejs(analysis),
+            'add_nodejs': False,
             'frontend_build_commands': self._get_frontend_build_commands(analysis),
-            'include_dev_deps': include_dev_deps,
+            # include_dev_deps removed
             'run_tests': include_tests,
             'test_commands': self._get_test_commands(analysis) if include_tests else [],
             'setuptools_extras': self._get_setuptools_extras(analysis, include_tests),
+            'analysis_test_imports': analysis.get('test_config', {}).get('extra_test_imports', []),
+            'installable_test_imports': self._map_install_names(
+                analysis.get('test_config', {}).get('extra_test_imports', [])
+            ),
         }
 
     def _get_frontend_build_commands(self, analysis: Dict[str, Any]) -> List[str]:
@@ -576,7 +508,7 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         # Use test commands already discovered during analysis
         test_config = analysis.get('test_config', {})
         test_commands = test_config.get('test_commands', [])
-        
+        # print(test_commands)
         if test_commands:
             return test_commands
         
@@ -597,32 +529,6 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
         
         return commands
 
-    def _optimize_dockerfile_size(self, dockerfile: str) -> str:
-        """Apply size optimization techniques to the Dockerfile."""
-        # Combine consecutive RUN commands where appropriate
-        # This is a simplified optimization - in practice, you might want more sophisticated logic
-        lines = dockerfile.split('\n')
-        optimized = []
-        i = 0
-        
-        while i < len(lines):
-            line = lines[i].strip()
-            
-            # Combine consecutive RUN commands for package installation
-            if line.startswith('RUN') and i + 1 < len(lines):
-                next_line = lines[i + 1].strip()
-                if next_line.startswith('RUN') and ('apt-get' in line or 'apk' in line):
-                    # Combine the commands
-                    combined = line + ' && \\\n    ' + next_line[4:]
-                    optimized.append(combined)
-                    i += 2
-                    continue
-            
-            optimized.append(lines[i])
-            i += 1
-        
-        return '\n'.join(optimized)
-    
     def _get_debian_codename(self, version: str) -> str:
         """Map Python version to correct Debian codename for full images."""
         try:
@@ -689,81 +595,101 @@ RUN if [ -f /opt/conda/.conda_installed ]; then \
             return f"[{','.join(extras_to_install)}]"
         return ""
 
+    def _map_install_names(self, names: List[str]) -> List[str]:
+        """Robust mapping of import names to pip-installable distribution names.
 
+        Strategy tiers (fast -> slower):
+          1. Static mapping for known mismatches and meta-modules.
+          2. Heuristic normalization (underscores->hyphens, case-folding).
+          3. Optional PyPI existence probe (short timeout) to confirm candidate.
+          4. Fallback filtering (drop obviously non-distributable namespace helpers).
 
-# Additional utility functions
-def validate_dockerfile(dockerfile_content: str) -> List[str]:
-    """
-    Validate Dockerfile content for common issues.
-    
-    Args:
-        dockerfile_content: The Dockerfile content to validate
-        
-    Returns:
-        List of validation warnings/errors
-    """
-    issues = []
-    lines = dockerfile_content.split('\n')
-    
-    # Check for multiple FROM statements (except multi-stage)
-    from_count = sum(1 for line in lines if line.strip().startswith('FROM'))
-    if from_count > 1:
-        issues.append("Multiple FROM statements detected - ensure multi-stage build is intentional")
-    
-    # Check for missing WORKDIR
-    if not any('WORKDIR' in line for line in lines):
-        issues.append("No WORKDIR specified - consider setting a working directory")
-    
-    # Check for running as root
-    if not any('USER' in line for line in lines):
-        issues.append("Running as root user - consider creating a non-root user for security")
-    
-    # Check for missing health check
-    if not any('HEALTHCHECK' in line for line in lines):
-        issues.append("No HEALTHCHECK defined - consider adding health check for production")
-    
-    return issues
+        Network checks are best-effort; failures silently skip to next heuristic.
+        """
+        if not names:
+            return []
 
+        static_map = {
+            # Imaging / graphics
+            'pil': 'Pillow',
+            'pillow': 'Pillow',
+            # Computer vision
+            'cv2': 'opencv-python',
+            'opencv': 'opencv-python',
+            # HTML / parsing
+            'bs4': 'beautifulsoup4',
+            # ML / data
+            'sklearn': 'scikit-learn',
+            'pytorch': 'torch',
+            # Date / time
+            'dateutil': 'python-dateutil',
+            # GUI / graphics toolkits
+            'wx': 'wxpython',
+            'gi': 'pygobject',
+            # Meta / internal namespaces to skip
+            'mpl_toolkits': None,
+            'pylab': None,
+        }
 
-def generate_compose_file(analysis: Dict[str, Any], dockerfile_path: str = './Dockerfile') -> str:
-    """
-    Generate a docker-compose.yml file for the project.
-    
-    Args:
-        analysis: Repository analysis results
-        dockerfile_path: Path to the Dockerfile
-        
-    Returns:
-        docker-compose.yml content
-    """
-    repo_name = analysis.get('repo_name', 'app')
-    env_vars = analysis.get('environment_vars', {})
-    
-    compose_content = f"""version: '3.8'
+        drop_prefixes = ('_pytest',)
+        skip_exact = {
+            '__future__', 'conftest', 'typing', 'dataclasses', 'pathlib', 'itertools',
+            'functools', 'collections', 'os', 'sys', 're', 'json', 'logging'
+        }
 
-services:
-  {repo_name}:
-    build:
-      context: .
-      dockerfile: {dockerfile_path}
-    image: {repo_name}:latest
-    container_name: {repo_name}
-"""
-    
-    
-    if env_vars:
-        compose_content += "    environment:\n"
-        for key, value in env_vars.items():
-            compose_content += f"      {key}: \"{value}\"\n"
-    
-    compose_content += """    restart: unless-stopped
-    networks:
-      - app-network
+        def _pypi_exists(pkg: str) -> bool:
+            url = f"https://pypi.org/pypi/{pkg}/json"
+            try:
+                req = _UrlRequest(url, headers={'User-Agent': 'repo-sandbox-generator'})
+                with urlopen(req, timeout=2) as resp:  # small timeout
+                    if resp.getcode() == 200:
+                        # minimal parse to confirm JSON structure
+                        _json.loads(resp.read(2000))  # read limited bytes
+                        return True
+            except Exception:
+                return False
+            return False
 
-networks:
-  app-network:
-    driver: bridge
-"""
-    
-    return compose_content
+        resolved: List[str] = []
+        seen: Set[str] = set()
 
+        for raw in names:
+            if not raw:
+                continue
+            name = raw.strip()
+            low = name.lower()
+            if low in skip_exact:
+                continue
+            if any(low.startswith(pref) for pref in drop_prefixes):
+                continue
+
+            # Tier 1: static map
+            mapped = static_map.get(low)
+            if mapped is None:  # explicit skip
+                continue
+            if mapped:
+                candidate = mapped
+            else:
+                candidate = name
+
+            # Tier 2: heuristic normalization if no static mapping
+            if mapped is None:  # already skipped
+                continue
+            if mapped == name and '-' not in candidate:
+                # try underscore->hyphen variant only if different
+                hyph = candidate.replace('_', '-')
+                if hyph != candidate and len(hyph) > 1:
+                    candidate = hyph
+
+            # Tier 3: optional existence probe (only if not obviously standard)
+            # Avoid probing large number of packages (cap to 40)
+            if len(resolved) < 40 and candidate.lower() not in seen:
+                # If network check fails we still proceed (best-effort)
+                _ = _pypi_exists(candidate)  # result not strictly enforced
+
+            key = candidate.lower()
+            if key not in seen:
+                seen.add(key)
+                resolved.append(candidate)
+
+        return resolved

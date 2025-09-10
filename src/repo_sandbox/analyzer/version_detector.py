@@ -157,7 +157,7 @@ class PythonVersionDetector:
                 detected_versions.extend(req_versions)
         
         # Select best version
-        print(detected_versions)
+        # print(detected_versions)
         if detected_versions:
             if prefer_latest:
                 best = max(detected_versions)

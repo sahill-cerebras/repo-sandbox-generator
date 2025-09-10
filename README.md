@@ -1,6 +1,6 @@
 # Repository Sandbox Generator
 
-Generate ready-to-build Docker (and optional docker‑compose) configurations for arbitrary Python repositories. Point it at a local path or a remote Git URL and it will:
+Generate ready-to-build Docker configurations for arbitrary Python repositories. Point it at a local path or a remote Git URL and it will:
 
 1. Analyze the repository structure
 2. Detect Python version (heuristic)
@@ -8,8 +8,7 @@ Generate ready-to-build Docker (and optional docker‑compose) configurations fo
 4. Infer system (APT / APK) packages sometimes required for popular Python wheels
 5. Detect test setup (pytest, unittest, Django tests, tox, or generic) and optionally embed test execution into the Docker build
 6. Produce a single‑stage Dockerfile optimized for build caching (dependency spec files copied before source)
-7. Optionally generate a docker‑compose.yml for local iterative development
-8. Emit analysis metadata (analysis.json) and a .dockerignore tuned for Python projects
+7. Emit analysis metadata (analysis.json) and a .dockerignore tuned for Python projects
 
 ## Features
 - Single-stage Dockerfile with layered dependency caching
@@ -17,7 +16,7 @@ Generate ready-to-build Docker (and optional docker‑compose) configurations fo
 - Optional inclusion of test commands at build time
 - Heuristic system package inference (e.g. libpq-dev for psycopg2)
 - Support for: requirements files (flat or layered), setup.py, pyproject.toml (PEP 621 / Poetry), Pipfile, environment.yml, setup.cfg
-- docker-compose generation with source bind‑mount for live reload style workflows
+<!-- docker-compose generation removed -->
 
 ## Installation
 
@@ -46,7 +45,7 @@ repo-sandbox analyze /path/to/repo
 
 ### Generate Docker assets for a local repository
 ```bash
-repo-sandbox generate /path/to/repo -o ./docker-config --include-compose --include-tests -v
+repo-sandbox generate /path/to/repo -o ./docker-config --include-tests -v
 ```
 
 ### Generate directly from a remote Git URL
@@ -63,7 +62,7 @@ repo-sandbox generate --help
 ## Generated Output (default)
 Inside the chosen output directory (default `./docker-config`):
 - `Dockerfile` – single stage build
-- `docker-compose.yml` (if `--include-compose` specified)
+<!-- docker-compose.yml generation removed -->
 - `.dockerignore`
 - `analysis.json` – structured metadata of the repository
 - Copied dependency definition files (e.g. `pyproject.toml`, `requirements.txt`, etc.)
@@ -77,10 +76,7 @@ docker build -t <repo_name> .
 # Run (example mapping port 8000)
 docker run -p 8000:8000 <repo_name>
 ```
-If docker‑compose was generated:
-```bash
-docker compose up --build
-```
+<!-- docker-compose instructions removed -->
 
 ## Python Version Detection
 The analyzer currently uses heuristics (files & metadata) and falls back to a default (3.9) when uncertain. You can override with `--python-version` during `generate`.
@@ -121,7 +117,7 @@ src/repo_sandbox/
     version_detector.py       # Python version heuristics
   generators/
     dockerfile_generator.py   # Builds single-stage Dockerfile & .dockerignore
-    docker_compose_generator.py # Creates docker-compose.yml
+  <!-- docker_compose_generator.py removed -->
   utils/
     file_utils.py             # File helpers (if extended)
     git_utils.py              # Git helpers (for potential future use)

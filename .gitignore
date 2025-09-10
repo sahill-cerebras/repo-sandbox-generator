@@ -1,3 +1,8 @@
-docker-config-*/
+.gitignore
+docker-config*/
 **/__pycache__/
 SWE-bench/
+.cache/
+work_instances/
+logs/
+*.log
