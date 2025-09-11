@@ -38,9 +38,12 @@ class DockerfileGenerator:
 
     # Enhanced base image templates with more options
     BASE_TEMPLATES = {
-        BaseImageType.FULL: 'python:{version}-{codename}',
-        BaseImageType.SLIM: 'python:{version}-slim-{codename}',
-        BaseImageType.SCIENTIFIC: 'python:{version}-{codename}',
+        # BaseImageType.FULL: 'python:{version}-{codename}',
+        # BaseImageType.SLIM: 'python:{version}-slim-{codename}',
+        # BaseImageType.SCIENTIFIC: 'python:{version}-{codename}',
+        BaseImageType.FULL: 'python:{version}',
+        BaseImageType.SLIM: 'python:{version}-slim',
+        BaseImageType.SCIENTIFIC: 'python:{version}',
     }
 
 
@@ -115,7 +118,7 @@ ENV {{ key }}="{{ value }}"
 {%- endfor %}
 
 # Upgrade pip base tools (done early to have modern wheel/build support)
-RUN python -m pip install --upgrade pip setuptools wheel build
+RUN python -m pip install --upgrade pip setuptools wheel build cython
 
 # -------------------------------
 # Python dependencies (priority order)
@@ -124,11 +127,13 @@ RUN python -m pip install --upgrade pip setuptools wheel build
 {%- if 'environment.yml' in dependency_files or 'environment.yaml' in dependency_files %}
 # --- Conda environment installation (preferred when provided) ---
 {%- set env_file = 'environment.yml' if 'environment.yml' in dependency_files else 'environment.yaml' %}
-RUN curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh && \
-    bash miniconda.sh -b -p /opt/conda && \
-    rm miniconda.sh && \
-    touch /opt/conda/.conda_installed
+RUN apt-get update && apt-get install -y curl bash
+RUN curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh
+RUN bash miniconda.sh -b -p /opt/conda
+RUN rm miniconda.sh
 ENV PATH="/opt/conda/bin:$PATH"
+RUN touch /opt/conda/.conda_installed
+
 
 # Accept Anaconda TOS for default channels (best-effort; harmless if unavailable)
 RUN conda init bash || true && \
@@ -137,10 +142,10 @@ RUN conda init bash || true && \
     conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r || true
 
 COPY {{ env_file }} /tmp/environment.yml
-RUN conda env create -f /tmp/environment.yml -n app && conda clean -a -y && echo "Activated conda env 'app'" && \
-    echo "dependencies captured from {{ env_file }}" && \
-    true
-ENV PATH="/opt/conda/envs/app/bin:$PATH"
+RUN conda env update -n base -f /tmp/environment.yml
+RUN conda clean -a -y 
+RUN echo "Activated conda env 'base'" && \
+    echo "dependencies captured from {{ env_file }}" 
 
 {%- elif 'requirements.txt' in dependency_files %}
 COPY requirements.txt /tmp/requirements.txt
@@ -158,28 +163,37 @@ RUN pip install poetry && poetry config virtualenvs.create false && poetry insta
 # Generic PEP 517/518 handling: try Poetry, Flit, or build wheel then install
 COPY . /tmp/project
 WORKDIR /tmp/project
-RUN pip install --upgrade pip setuptools wheel build cython || true && \
-    if grep -q "\\[tool.poetry\\]" pyproject.toml 2>/dev/null; then \
-        pip install poetry && \
-        poetry config virtualenvs.create false && \
-        poetry install --no-dev; \
-    elif grep -q "\\[tool.flit\\]" pyproject.toml 2>/dev/null || grep -q "flit_core" pyproject.toml 2>/dev/null; then \
-        pip install flit && \
-        python -m build --wheel && \
-        pip install --no-cache-dir dist/*.whl; \
-    else \
-        pip install --no-cache-dir -e .[test] 2>/dev/null || \
-        pip install --no-cache-dir -e . 2>/dev/null || \
-        (python -m build --wheel && pip install --no-cache-dir dist/*.whl); \
+
+RUN pip install --upgrade pip setuptools wheel build cython 
+
+# Poetry branch
+RUN if grep -q "\[tool.poetry\]" pyproject.toml 2>/dev/null; then \
+      pip install poetry && \
+      poetry config virtualenvs.create false && \
+      poetry install --no-dev; \
     fi
+
+# Flit branch
+RUN if grep -q "\[tool.flit\]" pyproject.toml 2>/dev/null || grep -q "flit_core" pyproject.toml 2>/dev/null; then \
+      pip install flit && \
+      python -m build --wheel && \
+      pip install --no-cache-dir dist/*.whl; \
+    fi
+
+# Fallback pip branch
+RUN pip install  --no-cache-dir -e .[test] || \
+    pip install  --no-cache-dir -e . || \
+    pip install  --no-cache-dir . || \
+    (python -m build --wheel && pip install  --no-cache-dir dist/*.whl)
+
 WORKDIR /app
 
 {%- elif 'setup.py' in dependency_files or 'setup.cfg' in dependency_files %}
 # Classic setuptools-based project
 COPY . /tmp/project
 WORKDIR /tmp/project
-RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir  -e .{{ setuptools_extras }}
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install  --no-cache-dir  -e .{{ setuptools_extras }}
 WORKDIR /app
 
 {%- else %}
@@ -193,60 +207,18 @@ COPY . .
 RUN {{ frontend_build_commands|join(' && ') }}
 {%- endif %}
 
-# -------------------------------------------------------------------------
-# Ensure the project is installed into the active environment before testing
-# -------------------------------------------------------------------------
-{%- if 'setup.py' in dependency_files or 'setup.cfg' in dependency_files %}
-RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
-    pip install --no-cache-dir  -e .{{ setuptools_extras }}\
-{%- elif 'pyproject.toml' in dependency_files %}
-RUN python -m pip install --upgrade pip setuptools wheel build cython || true && \
-    (pip install --no-cache-dir -e .[test] 2>/dev/null || \
-     pip install --no-cache-dir -e . 2>/dev/null || \
-     pip install --no-cache-dir . 2>/dev/null || \
-     (python -m build --wheel && pip install --no-cache-dir dist/*.whl) || true)
-{%- else %}
-RUN echo "No setup.py/pyproject.toml found, skipping editable install"\
-{%- endif %}
-
-
-# Attempt to install common dev/test extras - ignore failures
-RUN (pip install --no-cache-dir -e .[dev] 2>/dev/null || \
-    pip install --no-cache-dir -e .[test] 2>/dev/null || \
-    pip install --no-cache-dir -e .[tests] 2>/dev/null || \
-    pip install --no-cache-dir -e .[testing] 2>/dev/null || true)
-
-
-
 # Always install pytest (make image test-ready) plus normalized test-only dependencies
 RUN python -m pip install --upgrade pip setuptools wheel && \
     pip install --no-cache-dir pytest{% if installable_test_imports %} {{ installable_test_imports|join(' ') }}{% endif %}
 
+# Final aggregate install of all declared packages (python_packages + extras + test imports)
+{% if all_declared_packages %}
+RUN echo "Installing aggregated declared packages ({{ all_declared_packages|length }})" && \
+    pip install --no-cache-dir {% for p in all_declared_packages %}{{ p }} {% endfor %}
+{% endif %}
+
 """
 
-
-# {%- if run_tests and test_commands %}
-# # Install testing libraries detected from test commands
-# {%- set test_libs = ['pytest'] %}
-# {%- for command in test_commands %}
-# {%- set parts = command.split() %}
-# {%- if parts|length > 2 and parts[0] == 'python' and parts[1] == '-m' %}
-# {%- set _ = test_libs.append(parts[2]) %}
-# {%- else %}
-# {%- set _ = test_libs.append(parts[0]) %}
-# {%- endif %}
-# {%- endfor %}
-# RUN python -m pip install --upgrade pip setuptools wheel && pip install --no-cache-dir {{ test_libs | unique | join(' ') }}
-# {%- endif %}
-
-
-# {%- if run_tests and test_commands %}
-# RUN if [ -f /opt/conda/.conda_installed ]; then \
-#         /opt/conda/bin/conda run -n app {{ test_commands|join(' && /opt/conda/bin/conda run -n app ') }}; \
-#     else \
-#         {{ test_commands|join(' && ') }}; \
-#     fi
-# {%- endif %}
 
     def __init__(self):
         """Initialize the Dockerfile generator."""
@@ -257,7 +229,7 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
         self,
         analysis: Dict[str, Any],
         template: str = 'auto',
-    include_tests: bool = False,
+        include_tests: bool = False,
     ) -> str:
         """
         Generate an optimized Dockerfile based on repository analysis.
@@ -404,7 +376,8 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
         """Get the base image string for the given type and Python version."""
         template = self.BASE_TEMPLATES[image_type]
         
-        codename = self._get_debian_codename(python_version)
+        # codename = self._get_debian_codename(python_version)
+        codename = ""
         # print("Codename:",codename)
         # print(template.format(version=python_version, codename=codename))
         return template.format(version=python_version, codename=codename)
@@ -452,8 +425,8 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
         analysis: Dict[str, Any],
         base_image: str,
         base_image_type: BaseImageType,
-    package_manager: PackageManager,
-    include_tests: bool,
+        package_manager: PackageManager,
+        include_tests: bool,
     ) -> Dict[str, Any]:
         
         # Filter dependency files to only include those that exist
@@ -462,6 +435,27 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
             if f and (Path(analysis.get('repo_path', '.')) / f).exists()
         ]
         
+        # Aggregate all declared packages (core python_packages + extras_require values + test import install names)
+        all_declared_packages = self._collect_all_declared_packages(
+            analysis,
+            include_tests,
+            dependency_files,
+            installable_test_imports=None  # placeholder, will fill after mapping below
+        )  # we will regenerate after mapping
+
+        # Build mapping of test imports to installable names (existing behavior)
+        installable_test_imports = self._map_install_names(
+            analysis.get('test_config', {}).get('extra_test_imports', [])
+        )
+
+        # Recompute with mapped test imports now
+        all_declared_packages = self._collect_all_declared_packages(
+            analysis,
+            include_tests,
+            dependency_files,
+            installable_test_imports=installable_test_imports
+        )
+
         return {
             'repo_name': analysis['repo_name'],
             'python_version': analysis['python_version'],
@@ -483,10 +477,78 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
             'test_commands': self._get_test_commands(analysis) if include_tests else [],
             'setuptools_extras': self._get_setuptools_extras(analysis, include_tests),
             'analysis_test_imports': analysis.get('test_config', {}).get('extra_test_imports', []),
-            'installable_test_imports': self._map_install_names(
-                analysis.get('test_config', {}).get('extra_test_imports', [])
-            ),
+            'installable_test_imports': installable_test_imports,
+            'all_declared_packages': all_declared_packages,
         }
+
+    def _collect_all_declared_packages(
+        self,
+        analysis: Dict[str, Any],
+        include_tests: bool,
+        dependency_files: List[str],
+        installable_test_imports: Optional[List[str]] = None,
+    ) -> List[str]:
+        """Aggregate every declared package name/version we want to force-install.
+
+        Order preference:
+          1. python_packages (as discovered)
+          2. extras_require flattened (tests/docs/lint/dev etc.)
+          3. test imports mapped to installable names
+
+        Duplicates removed preserving first occurrence. Empty / None skipped.
+        """
+        seen: Set[str] = set()
+        ordered: List[str] = []
+
+        def _normalize_requirement(raw: str) -> str:
+            """Normalize spaces around version specifiers (==,>=,<=,~=,!=,===,<,>). Preserve environment markers.
+
+            Examples:
+              'docutils == 0.15.2' -> 'docutils==0.15.2'
+              'cftime >= 1.1.1' -> 'cftime>=1.1.1'
+              'pkg >=1.0 ; python_version<"3.11"' -> 'pkg>=1.0; python_version<"3.11"'
+            """
+            if not raw:
+                return raw
+            s = raw.strip()
+            # Split off environment marker part if present
+            marker_part = ''
+            if ';' in s:
+                parts = s.split(';', 1)
+                s, marker_part = parts[0].strip(), ';' + parts[1].strip()
+            # Regex for name[extras] operator version
+            # Allow operators: ==,>=,<=,~=,!=,===,<,>
+            import re as _re
+            m = _re.match(r'^([A-Za-z0-9_.-]+(?:\[[^\]]+\])?)\s*([!~<>=]{1,3})\s*([^\s]+)$', s)
+            if m:
+                name, op, ver = m.groups()
+                s = f"{name}{op}{ver}"
+            return s + (marker_part if marker_part else '')
+
+        def add(pkg: str):
+            if not pkg:
+                return
+            normalized = _normalize_requirement(pkg)
+            key = normalized.lower()
+            if key not in seen:
+                seen.add(key)
+                ordered.append(normalized)
+
+        # 1. core python packages
+        for p in analysis.get('python_packages', []) or []:
+            add(p)
+
+        # 2. extras_require values
+        for _extra, pkgs in (analysis.get('extras_require') or {}).items():
+            for p in pkgs or []:
+                add(p)
+
+        # 3. test imports (mapped) if include_tests
+        if include_tests and installable_test_imports:
+            for p in installable_test_imports:
+                add(p)
+
+        return ordered
 
     def _get_frontend_build_commands(self, analysis: Dict[str, Any]) -> List[str]:
         """Get frontend build commands if applicable."""

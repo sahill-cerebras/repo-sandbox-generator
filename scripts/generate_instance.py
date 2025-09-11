@@ -139,7 +139,6 @@ def ensure_repo_clone(repo_full: str, cache_dir: Path, logger: logging.Logger) -
     cache_dir = cache_dir.resolve()
     owner, name = repo_full.split('/', 1)
     target = (cache_dir / f"{owner}__{name}").resolve()
-    # Thread-safe: avoid simultaneous clone of same repo
     lock = _get_clone_lock(repo_full)
     with lock:
         if target.exists():
@@ -148,31 +147,42 @@ def ensure_repo_clone(repo_full: str, cache_dir: Path, logger: logging.Logger) -
         target.parent.mkdir(parents=True, exist_ok=True)
         url = f"https://github.com/{repo_full}.git"
         logger.info("Cloning %s -> %s", url, target)
-        # Clone without changing cwd so destination path is interpreted correctly
         run(["git", "clone", "--quiet", url, str(target)], logger, cwd=None)
         return target
 
 
-def create_worktree_or_copy(repo_dir: Path, commit: str, dest_dir: Path, logger: logging.Logger):
-    """Create a git worktree at absolute dest_dir (or fallback copy).
+def create_checkout(repo_dir: Path, commit: str, dest_dir: Path, logger: logging.Logger, full_git: bool = False):
+    """Create a checkout of the requested commit at dest_dir.
 
-    Fixes earlier issue where a relative dest path caused worktree creation
-    inside the cached clone (repo_dir/relative/...), leaving expected path empty.
+    Modes:
+      * full_git=True: local clone including full .git history (detached at commit)
+      * full_git=False: attempt lightweight worktree; fallback copy+checkout if worktree fails
     """
     dest_dir_abs = dest_dir.resolve()
     if dest_dir_abs.exists():
         logger.info("Destination %s already exists; removing for fresh checkout", dest_dir_abs)
         shutil.rmtree(dest_dir_abs)
     dest_dir_abs.parent.mkdir(parents=True, exist_ok=True)
-    # Ensure commit is present locally (retry fetch if not)
+
     if not git_has_commit(repo_dir, commit):
         fetched = attempt_fetch_commit(repo_dir, commit, logger)
         if not fetched and not git_has_commit(repo_dir, commit):
             raise RuntimeError(f"Unable to fetch commit {commit}")
-    # Try worktree first with absolute path
+
+    if full_git:
+        logger.info("Creating full clone (including history) for commit %s", commit)
+        rc = run_allow_fail(["git", "clone", "--quiet", str(repo_dir), str(dest_dir_abs)])
+        if rc != 0:
+            raise RuntimeError(f"git clone failed (rc={rc}) for cached repo")
+        rc = run_allow_fail(["git", "checkout", "--detach", commit], cwd=dest_dir_abs)
+        if rc != 0:
+            raise RuntimeError(f"git checkout {commit} failed (rc={rc}) in full clone")
+        logger.info("Full clone ready at %s (detached %s)", dest_dir_abs, commit)
+        return dest_dir_abs
+
     rc = run_allow_fail(["git", "worktree", "add", "--detach", str(dest_dir_abs), commit], cwd=repo_dir)
     if rc != 0:
-        logger.warning("git worktree failed (code %s). Falling back to copy & checkout", rc)
+        logger.warning("git worktree failed (rc=%s). Falling back to copy & checkout (no full history)", rc)
         shutil.copytree(repo_dir, dest_dir_abs, ignore=shutil.ignore_patterns('.git', '.gitworktrees'))
         run(["git", "clone", "--quiet", str(repo_dir), str(dest_dir_abs / '.git-temp')], logger)
         tmp_git = dest_dir_abs / '.git-temp' / '.git'
@@ -181,7 +191,6 @@ def create_worktree_or_copy(repo_dir: Path, commit: str, dest_dir: Path, logger:
             shutil.rmtree(dest_dir_abs / '.git-temp', ignore_errors=True)
         run(["git", "checkout", commit], logger, cwd=dest_dir_abs)
     else:
-        # Fallback: if absolute directory still missing, maybe worktree created relative to repo_dir
         if not dest_dir_abs.exists():
             possible = (repo_dir / dest_dir)
             if possible.exists():
@@ -189,7 +198,6 @@ def create_worktree_or_copy(repo_dir: Path, commit: str, dest_dir: Path, logger:
                 dest_dir_abs.parent.mkdir(parents=True, exist_ok=True)
                 shutil.move(str(possible), str(dest_dir_abs))
         logger.info("Created worktree at %s for commit %s", dest_dir_abs, commit)
-    # Return final path (even though function signature doesn't use return internally)
     return dest_dir_abs
 
 
@@ -264,7 +272,7 @@ def _process_instance_batch(row_dict: Dict[str, Any], ordinal: int, total: int, 
     logger.info("(%d/%d) Instance %s repo=%s commit=%s", ordinal, total, instance.instance_id, instance.repo_full, instance.commit)
     try:
         repo_cache = ensure_repo_clone(instance.repo_full, cache_dir, logger)
-        inst_dir_final = create_worktree_or_copy(repo_cache, instance.commit, inst_dir, logger)
+        inst_dir_final = create_checkout(repo_cache, instance.commit, inst_dir, logger, full_git=args.full_git)
         generate_docker_assets(inst_dir_final, logger, include_tests=not args.no_tests)
         write_test_case_files(inst_dir_final, instance, logger)
         (inst_dir_final / 'dataset_row.json').write_text(json.dumps(instance.raw_row, indent=2))
@@ -337,6 +345,7 @@ def main():
     parser.add_argument('--skip-existing', action='store_true', help='Skip instances whose output dir already exists (ignored if --force)')
     parser.add_argument('--workers', type=int, default=1, help='Parallel workers for --all (use 0 or negative for auto = CPU count)')
     parser.add_argument('--fetch-parallelism', type=int, default=8, help='Max concurrent git fetch ops (reduce if hitting network limits)')
+    parser.add_argument('--full-git', action='store_true', help='Create full standalone clone (includes .git history) instead of lightweight worktree')
     args = parser.parse_args()
 
     # Adjust global fetch semaphore
@@ -394,7 +403,7 @@ def main():
         elif worktree_dir.exists() and args.skip_existing:
             logger.info("Skipping existing instance directory %s", worktree_dir)
             return
-        worktree_dir_final = create_worktree_or_copy(repo_cache, instance.commit, worktree_dir, logger)
+        worktree_dir_final = create_checkout(repo_cache, instance.commit, worktree_dir, logger, full_git=args.full_git)
         generate_docker_assets(worktree_dir_final, logger, include_tests=not args.no_tests)
         write_test_case_files(worktree_dir_final, instance, logger)
         (worktree_dir_final / 'dataset_row.json').write_text(json.dumps(instance.raw_row, indent=2))
