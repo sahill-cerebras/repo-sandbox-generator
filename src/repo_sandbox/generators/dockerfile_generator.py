@@ -500,43 +500,77 @@ RUN echo "Installing aggregated declared packages ({{ all_declared_packages|leng
         seen: Set[str] = set()
         ordered: List[str] = []
 
-        def _normalize_requirement(raw: str) -> str:
-            """Normalize spaces around version specifiers (==,>=,<=,~=,!=,===,<,>). Preserve environment markers.
+        # def _normalize_requirement(raw: str) -> str:
+        #     """Normalize spaces around version specifiers (==,>=,<=,~=,!=,===,<,>). Preserve environment markers.
 
+        #     Examples:
+        #       'docutils == 0.15.2' -> 'docutils==0.15.2'
+        #       'cftime >= 1.1.1' -> 'cftime>=1.1.1'
+        #       'pkg >=1.0 ; python_version<"3.11"' -> 'pkg>=1.0; python_version<"3.11"'
+        #     """
+        #     if not raw:
+        #         return raw
+        #     s = raw.strip()
+        #     # Split off environment marker part if present
+        #     marker_part = ''
+        #     if ';' in s:
+        #         parts = s.split(';', 1)
+        #         s, marker_part = parts[0].strip(), ';' + parts[1].strip()
+        #     # Regex for name[extras] operator version
+        #     # Allow operators: ==,>=,<=,~=,!=,===,<,>
+        #     import re as _re
+        #     m = _re.match(r'^([A-Za-z0-9_.-]+(?:\[[^\]]+\])?)\s*([!~<>=]{1,3})\s*([^\s]+)$', s)
+        #     if m:
+        #         name, op, ver = m.groups()
+        #         s = f"{name}{op}{ver}"
+        #     return s + (marker_part if marker_part else '')
+
+        def _extract_package_name(raw: str) -> str:
+            """Return only the package name (with extras if present), dropping versions and markers.
+            
             Examples:
-              'docutils == 0.15.2' -> 'docutils==0.15.2'
-              'cftime >= 1.1.1' -> 'cftime>=1.1.1'
-              'pkg >=1.0 ; python_version<"3.11"' -> 'pkg>=1.0; python_version<"3.11"'
+            'docutils == 0.15.2' -> 'docutils'
+            'cftime >= 1.1.1' -> 'cftime'
+            'pkg >=1.0 ; python_version<"3.11"' -> 'pkg'
+            'uvicorn[standard]>=0.15.0' -> 'uvicorn[standard]'
             """
             if not raw:
-                return raw
-            s = raw.strip()
-            # Split off environment marker part if present
-            marker_part = ''
-            if ';' in s:
-                parts = s.split(';', 1)
-                s, marker_part = parts[0].strip(), ';' + parts[1].strip()
-            # Regex for name[extras] operator version
-            # Allow operators: ==,>=,<=,~=,!=,===,<,>
-            import re as _re
-            m = _re.match(r'^([A-Za-z0-9_.-]+(?:\[[^\]]+\])?)\s*([!~<>=]{1,3})\s*([^\s]+)$', s)
-            if m:
-                name, op, ver = m.groups()
-                s = f"{name}{op}{ver}"
-            return s + (marker_part if marker_part else '')
+                return raw.strip()
 
+            s = raw.strip()
+            # remove environment marker if any
+            if ";" in s:
+                s = s.split(";", 1)[0].strip()
+
+            # capture name[extras] before any version specifier
+            m = re.match(r'^([A-Za-z0-9_.-]+(?:\[[^\]]+\])?)', s)
+            if m:
+                return m.group(1)
+
+            return s
+
+
+        # def add(pkg: str):
+        #     if not pkg:
+        #         return
+        #     normalized = _normalize_requirement(pkg)
+        #     key = normalized.lower()
+        #     if key not in seen:
+        #         seen.add(key)
+        #         ordered.append(normalized)
         def add(pkg: str):
             if not pkg:
                 return
-            normalized = _normalize_requirement(pkg)
-            key = normalized.lower()
+            name_only = _extract_package_name(pkg)
+            key = name_only.lower()
             if key not in seen:
                 seen.add(key)
-                ordered.append(normalized)
+                ordered.append(name_only)
+
 
         # 1. core python packages
-        for p in analysis.get('python_packages', []) or []:
-            add(p)
+        # for p in analysis.get('python_packages', []) or []:
+        #     add(p)
 
         # 2. extras_require values
         for _extra, pkgs in (analysis.get('extras_require') or {}).items():
